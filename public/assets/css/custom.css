@@ -22,7 +22,9 @@ body {
     margin: 0;
 }
 
-/* 1. Header Styling (Fixed Dark Slate Theme & Clean Typography) */
+/* ==========================================================================
+   1. Header Styling (Fixed Dark Slate Theme)
+   ========================================================================== */
 #header {
     position: fixed;
     top: 0;
@@ -41,22 +43,10 @@ body {
     justify-content: space-between;
 }
 
-#header .logo span {
-    color: #ffffff !important;
-}
-
-#header .header-page-title {
-    color: #cbd5e1 !important;
-}
-
-#header .nav-link {
-    color: #ffffff !important;
-}
-
-#header .header-user-name {
-    color: #ffffff !important;
-}
-
+#header .logo span,
+#header .header-page-title,
+#header .nav-link,
+#header .header-user-name,
 #header i {
     color: #ffffff !important;
 }
@@ -112,7 +102,50 @@ body {
     }
 }
 
-/* 2. Sidebar Full Height Styling (Top to Bottom) */
+/* Header Dropdown Menu & Hover Behavior */
+#header .nav-item.dropdown:hover .dropdown-menu {
+    display: block;
+    margin-top: 0;
+}
+
+#header .dropdown-menu {
+    background-color: #ffffff !important;
+    color: #1e293b !important;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2) !important;
+    border: 1px solid #e2e8f0 !important;
+    border-radius: 12px !important;
+    padding: 8px !important;
+    z-index: 999999 !important;
+}
+
+#header .dropdown-menu .dropdown-item {
+    color: #334155 !important;
+    background-color: transparent !important;
+    border-radius: 6px;
+    transition: background 0.2s ease;
+}
+
+#header .dropdown-menu .dropdown-item:hover {
+    background-color: #46698d !important;
+    color: #ffffff !important;
+}
+
+#header .dropdown-menu .dropdown-item.text-danger:hover {
+    background-color: #b84b4b !important;
+    color: #ffffff !important;
+}
+
+#header .dropdown-menu .dropdown-header h6 {
+    color: #1e293b !important;
+}
+
+#header .dropdown-menu .dropdown-header span {
+    color: #64748b !important;
+}
+
+/* ==========================================================================
+   2. Sidebar Full Height Styling (Top to Bottom) & Toggle
+   ========================================================================== */
 #sidebar {
     position: fixed;
     top: var(--header-height);
@@ -162,7 +195,19 @@ body {
     background: #e0f2fe;
 }
 
-/* 3. Main Content & Footer Layout */
+/* Sidebar Toggle Hide / Collapse Behavior */
+body.toggle-sidebar #sidebar {
+    transform: translateX(-100%);
+}
+
+body.toggle-sidebar #main,
+body.toggle-sidebar #footer {
+    margin-left: 0 !important;
+}
+
+/* ==========================================================================
+   3. Main Content & Footer Layout
+   ========================================================================== */
 #main {
     margin-top: var(--header-height);
     padding: 20px 30px;
@@ -190,17 +235,9 @@ body {
     }
 }
 
-/* 4. Sidebar Toggle Hide / Collapse Behavior */
-body.toggle-sidebar #sidebar {
-    transform: translateX(-100%);
-}
-
-body.toggle-sidebar #main,
-body.toggle-sidebar #footer {
-    margin-left: 0 !important;
-}
-
-/* 5. Card Containers */
+/* ==========================================================================
+   4. Card Containers & Floating Inputs
+   ========================================================================== */
 .card-soft {
     background: #fff;
     border: 1px solid #e2e8f0;
@@ -209,7 +246,6 @@ body.toggle-sidebar #footer {
     margin-bottom: 20px;
 }
 
-/* 6. Universal Floating Input Fields & Joint Labels */
 .input-floating-wrap {
     position: relative;
     margin-top: 4px;
@@ -263,7 +299,6 @@ body.toggle-sidebar #footer {
     color: var(--danger-color) !important;
 }
 
-/* 7. Section Headers */
 .section-title {
     font-size: 16px;
     font-weight: 600;
@@ -274,7 +309,9 @@ body.toggle-sidebar #footer {
     padding-bottom: 10px;
 }
 
-/* 8. Enterprise DataTables & Minimalist Export Buttons */
+/* ==========================================================================
+   5. Enterprise DataTables & Minimalist Export Buttons (#e9e9e9)
+   ========================================================================== */
 .table {
     font-size: 13px;
     color: #334155;
@@ -308,7 +345,9 @@ body.toggle-sidebar #footer {
     gap: 6px;
 }
 
-.dt-button {
+.dt-button,
+.buttons-excel,
+.buttons-pdf {
     background: #e9e9e9 !important;
     border: 1px solid #cbd5e1 !important;
     color: #334155 !important;
@@ -320,9 +359,11 @@ body.toggle-sidebar #footer {
     transition: all 0.2s ease;
 }
 
-.dt-button:hover {
+.dt-button:hover,
+.buttons-excel:hover,
+.buttons-pdf:hover {
     background: #dfdfdf !important;
-    border-color: #0f172a !important;
+    border-color: #94a3b8 !important;
     color: #0f172a !important;
 }
 
@@ -346,6 +387,9 @@ body.toggle-sidebar #footer {
     box-shadow: 0 0 0 3px rgba(44, 111, 155, 0.15);
 }
 
+/* ==========================================================================
+   6. Universal Table Action Buttons
+   ========================================================================== */
 .table-action-btns {
     display: flex;
     align-items: center;
@@ -410,128 +454,57 @@ body.toggle-sidebar #footer {
     color: #fff;
 }
 
-#header .dropdown-menu {
+/* --- Final Fix: Card Edge Filter Outside Positioning --- */
+.card-soft {
+    position: relative !important;
+    overflow: visible !important;
+    /* Ye zaroori hai taaki button bahar dikhe */
+}
+
+/* Card ke right border par outer stick karne ke liye */
+.card-edge-filter-wrap {
+    position: absolute !important;
+    right: -42px !important;
+    /* Card ke width se theek bahar */
+    top: 20px !important;
+    z-index: 9999 !important;
+}
+
+.card-edge-filter-btn {
+    background-color: #2c6f9b !important;
+    color: #ffffff !important;
+    border: none !important;
+    width: 42px !important;
+    height: 42px !important;
+    border-radius: 0 8px 8px 0 !important;
+    /* Right side rounded */
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    box-shadow: 4px 4px 15px rgba(0, 0, 0, 0.2) !important;
+    cursor: pointer !important;
+    padding: 0 !important;
+}
+
+.card-edge-filter-btn::after {
+    display: none !important;
+}
+
+.card-edge-filter-btn:hover {
+    background-color: #1e5578 !important;
+}
+
+/* Dropdown menu button ke theek left side me open hoga */
+.card-edge-filter-wrap .dropdown-menu {
+    position: absolute !important;
+    right: 50px !important;
+    left: auto !important;
+    top: -5px !important;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25) !important;
+    border-radius: 12px !important;
+    border: 1px solid #cbd5e1 !important;
+    padding: 15px !important;
+    min-width: 250px;
     background-color: #ffffff !important;
-    color: #1e293b !important;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2) !important;
-    border: 1px solid #e2e8f0 !important;
-    z-index: 99999 !important;
-}
-
-#header .dropdown-menu .dropdown-item {
-    color: #334155 !important;
-    background-color: transparent !important;
-}
-
-#header .dropdown-menu .dropdown-item:hover {
-    background-color: #f1f5f9 !important;
-    color: #0f172a !important;
-}
-
-#header .dropdown-menu .dropdown-item.text-danger:hover {
-    background-color: #fef2f2 !important;
-    color: #dc3545 !important;
-}
-
-#header .dropdown-menu .dropdown-header h6 {
-    color: #1e293b !important;
-}
-
-#header .dropdown-menu .dropdown-header span {
-    color: #64748b !important;
-}
-
-#header .nav-item.dropdown:hover .dropdown-menu {
-   display: block;
-   margin-top: 0;
-}
-
-#header .dropdown-menu {
-   background-color: #ffffff !important;
-   color: #1e293b !important;
-   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2) !important;
-   border: 1px solid #e2e8f0 !important;
-   border-radius: 12px !important;
-   padding: 8px !important;
-   z-index: 999999 !important;
-}
-
-#header .dropdown-menu .dropdown-item {
-   color: #334155 !important;
-   background-color: transparent !important;
-   border-radius: 6px;
-}
-
-#header .dropdown-menu .dropdown-item:hover {
-   background-color: #46698d !important;
-   color: #ffffff !important;
-}
-
-#header .dropdown-menu .dropdown-item.text-danger:hover {
-   background-color: #b84b4b !important;
-   color: #ffffff !important;
-}
-/* ==========================================================================
-   1. Excel & PDF Export Buttons Styling (#e9e9e9 background)
-   ========================================================================== */
-.dt-buttons {
-   margin-bottom: 15px;
-   display: inline-flex;
-   gap: 6px;
-}
-
-.dt-button, 
-.buttons-excel, 
-.buttons-pdf {
-   background: #e9e9e9 !important;
-   border: 1px solid #cbd5e1 !important;
-   color: #334155 !important;
-   padding: 5px 14px !important;
-   font-size: 13px !important;
-   font-weight: 500 !important;
-   border-radius: 4px !important;
-   box-shadow: none !important;
-   transition: all 0.2s ease;
-}
-
-.dt-button:hover, 
-.buttons-excel:hover, 
-.buttons-pdf:hover {
-   background: #dfdfdf !important;
-   border-color: #94a3b8 !important;
-   color: #0f172a !important;
-}
-
-#header .dropdown-menu {
-   background-color: #ffffff !important;
-   color: #1e293b !important;
-   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2) !important;
-   border: 1px solid #e2e8f0 !important;
-   border-radius: 12px !important;
-   padding: 8px !important;
-   z-index: 999999 !important;
-}
-
-#header .dropdown-menu .dropdown-item {
-   color: #334155 !important;
-   background-color: transparent !important;
-   border-radius: 6px;
-}
-
-#header .dropdown-menu .dropdown-item:hover {
-   background-color: #46698d !important;
-   color: #ffffff !important;
-}
-
-#header .dropdown-menu .dropdown-item.text-danger:hover {
-   background-color: #b84b4b !important;
-   color: #ffffff !important;
-}
-
-#header .dropdown-menu .dropdown-header h6 {
-   color: #1e293b !important;
-}
-
-#header .dropdown-menu .dropdown-header span {
-   color: #64748b !important;
+    z-index: 999999 !important;
 }

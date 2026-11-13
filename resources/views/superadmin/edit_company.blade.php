@@ -1,13 +1,6 @@
 @extends('superadmin.layouts.app')
 
 @section('content')
-<div class="pagetitle d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
-   <div class="d-flex align-items-center gap-2">
-      <a href="{{ route('superadmin.companies.index') }}" class="text-dark fs-5 text-decoration-none"><i class="bi bi-arrow-left"></i></a>
-      <h1 class="mb-0 fs-4 fw-bold text-dark">Edit Household</h1>
-   </div>
-</div>
-
 <section class="section">
    <div class="row">
       <div class="col-lg-12">
@@ -17,7 +10,7 @@
                <input type="hidden" name="_method" value="PUT">
 
                <!-- 1. Household Information -->
-               <div class="section-title mt-0">Household Information</div>
+               <div class="section-title mt-0">1. Household Information</div>
 
                <div class="row g-4">
                   <div class="col-md-5">
@@ -117,7 +110,7 @@
                </div>
 
                <!-- Form Actions inside card -->
-               <div class="d-flex justify-content-between align-items-center mt-5 pt-3 border-top">
+               <div class="d-flex justify-content-between align-items-center mt-2 pt-3">
                   <button type="button" class="btn btn-danger px-4 py-2" id="closeBtn" style="border-radius: 6px; font-weight: 600; font-size: 13px;">CANCEL</button>
                   <button type="submit" class="btn px-5 py-2" id="updateBtn" style="background-color: #334e68; color: #fff; border: none; border-radius: 6px; font-weight: 600; font-size: 13px;">UPDATE</button>
                </div>

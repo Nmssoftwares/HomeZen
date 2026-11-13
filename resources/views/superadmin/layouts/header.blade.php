@@ -8,13 +8,13 @@
 
         <!-- Back Arrow / Toggle Sidebar Button -->
         <button type="button" class="btn btn-link text-white p-0 border-0 toggle-sidebar-btn shadow-none d-flex align-items-center justify-content-center" style="font-size: 20px; width: 36px; height: 36px; border-radius: 8px; transition: background 0.2s;" title="Toggle Sidebar" onmouseover="this.style.background='rgba(255,255,255,0.1)'" onmouseout="this.style.background='transparent'">
-            <i class="bi bi-arrow-left"></i>
+            <i class="bi bi-list"></i>
         </button>
     </div>
 
     <!-- Center: Page / Portal Title -->
     <div class="header-page-title d-none d-lg-block text-white-50 small fw-semibold text-uppercase" style="letter-spacing: 0.5px;">
-        Super Admin Portal
+        Super Admin
     </div>
 
     <!-- Right: Navigation (Language Switcher & Profile Dropdown) -->

@@ -3,7 +3,7 @@
 @section('content')
 <div class="pagetitle d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
    <div>
-      <h1 class="mb-0">System Modules</h1>
+      <h1 class="mb-0 fs-4 fw-bold text-dark">System Modules</h1>
       <div class="text-muted small mt-1">Configure accessible global modules, functional suites, and system status.</div>
    </div>
 </div>
@@ -11,47 +11,49 @@
 <section class="section">
    <div class="row">
       <div class="col-lg-12">
-         <div class="card-soft">
-            <div class="p-3">
-               <!-- Filter Bar -->
-               <div class="row g-2 mb-3 align-items-center">
-                  <div class="col-md-4 col-lg-3">
-                     <label class="form-label small fw-semibold text-muted mb-1">Filter by Functional Suite / Group:</label>
-                     <select class="form-select form-select-sm" id="groupFilter">
-                        <option value="">All Groups</option>
-                        @if(isset($groups) && count($groups) > 0)
-                        @foreach($groups as $grp)
-                        <option value="{{ $grp }}">{{ $grp }}</option>
-                        @endforeach
-                        @endif
-                     </select>
-                  </div>
-               </div>
+         <!-- Card Wrapper with Outer Filter Button Container -->
+         <div class="position-relative">
 
-               <table class="table table-bordered align-middle" id="modulesTable" width="100%">
-                  <thead>
-                     <tr>
-                        <th>Module Details</th>
-                        <th class="text-center">Code</th>
-                        <th>Functional Suite / Group</th>
-                        <th>Dashboard Entry URL</th>
-                        <th class="text-center">Status</th>
-                        <th class="text-center">Active Toggle</th>
-                     </tr>
-                  </thead>
-               </table>
+            <!-- Card Edge Filter Button (Sticking to the right outer border) -->
+            <div class="card-edge-filter-wrap dropdown">
+               <button class="card-edge-filter-btn dropdown-toggle hide-arrow" type="button" id="cardFilterDropdown" data-bs-toggle="dropdown" aria-expanded="false" title="Filter Modules">
+                  <i class="bi bi-funnel-fill fs-5"></i>
+               </button>
+               <div class="dropdown-menu dropdown-menu-end shadow-lg" aria-labelledby="cardFilterDropdown">
+                  <label class="form-label small fw-semibold text-muted mb-1">Filter by Functional Suite:</label>
+                  <select class="form-select form-select-sm" id="groupFilter">
+                     <option value="">All Groups</option>
+                     @if(isset($groups) && count($groups) > 0)
+                     @foreach($groups as $grp)
+                     <option value="{{ $grp }}">{{ $grp }}</option>
+                     @endforeach
+                     @endif
+                  </select>
+               </div>
             </div>
+
+            <!-- Soft Card Content -->
+            <div class="card-soft p-4">
+               <div class="table-responsive">
+                  <table class="table table-hover align-middle w-100" id="modulesTable">
+                     <thead>
+                        <tr>
+                           <th>Module Details</th>
+                           <th class="text-center">Code</th>
+                           <th>Functional Suite / Group</th>
+                           <th>Dashboard Entry URL</th>
+                           <th class="text-center">Status</th>
+                           <th class="text-center">Active Toggle</th>
+                        </tr>
+                     </thead>
+                  </table>
+               </div>
+            </div>
+
          </div>
       </div>
    </div>
 </section>
-
-<!-- Floating Export Buttons -->
-<div class="floating-export-wrapper" style="position: fixed; bottom: 20px; right: 20px; z-index: 9999;">
-   <a href="javascript:void(0);" id="exportExcel" title="Export Excel" class="floating-export-option excel-btn"><i class="bi bi-file-earmark-excel"></i></a>
-   <a href="javascript:void(0);" id="exportPdf" title="Export PDF" class="floating-export-option pdf-btn"><i class="bi bi-file-earmark-pdf"></i></a>
-   <a href="javascript:void(0);" id="exportMainBtn" title="Export" class="floating-excel-btn"><i class="bi bi-download" id="exportMainIcon"></i></a>
-</div>
 @endsection
 
 @section('scripts')
@@ -71,20 +73,30 @@
          },
          dom: 'Bfrtip',
          buttons: [{
-               extend: 'excel',
-               text: 'Excel',
-               className: 'btn btn-success btn-sm',
-               exportOptions: {
-                  columns: [0, 1, 2, 3, 4],
-                  // Excel me HTML tags hatane ke liye
-                  format: {
-                     body: function(data, row, column, node) {
-                        return data ? data.replace(/<[^>]*>?/gm, ' ').replace(/\s+/g, ' ').trim() : '';
-                     }
+            extend: 'excel',
+            text: 'Excel',
+            className: 'buttons-excel dt-button',
+            exportOptions: {
+               columns: [0, 1, 2, 3, 4],
+               format: {
+                  body: function(data, row, column, node) {
+                     return data ? data.replace(/<[^>]*>?/gm, ' ').replace(/\s+/g, ' ').trim() : '';
                   }
                }
             }
-         ],
+         }, {
+            extend: 'pdf',
+            text: 'PDF',
+            className: 'buttons-pdf dt-button',
+            action: function(e, dt, node, config) {
+               let groupName = $('#groupFilter').val();
+               let url = "{{ route('superadmin.modules.export.pdf') }}";
+               if (groupName) {
+                  url += "?group_name=" + encodeURIComponent(groupName);
+               }
+               window.location.href = url;
+            }
+         }],
          columnDefs: [{
             targets: [1, 4, 5],
             className: 'text-center'
@@ -118,37 +130,10 @@
          ]
       });
 
-      // Reload Table when Group Filter changes
       $('#groupFilter').on('change', function() {
          dataTable.ajax.reload();
       });
 
-      // Floating Export
-      $('#exportMainBtn').on('click', function(e) {
-         e.preventDefault();
-         $('.floating-export-wrapper').toggleClass('active');
-      });
-
-      $('#exportExcel').on('click', function() {
-         dataTable.button('.buttons-excel').trigger();
-         $('.floating-export-wrapper').removeClass('active');
-      });
-
-      // Custom Backend PDF Generate logic
-      $('#exportPdf').on('click', function() {
-         let groupName = $('#groupFilter').val();
-         let url = "{{ route('superadmin.modules.export.pdf') }}";
-
-         // Agar dropdown se koi filter select kiya hai, toh usko parameter me bhejenge
-         if (groupName) {
-            url += "?group_name=" + encodeURIComponent(groupName);
-         }
-
-         window.location.href = url;
-         $('.floating-export-wrapper').removeClass('active');
-      });
-
-      // Real-time Status Switch Toggle
       $(document).on('change', '.status-toggle', function() {
          const toggle = $(this);
          const id = toggle.data('id');
