@@ -33,7 +33,7 @@
    <link rel="icon" type="image/x-icon" href="/favicon.ico">
 
    <!-- Universal Custom Enterprise CSS -->
-   <link href="{{ asset('assets/css/custom.css') }}?v=105" rel="stylesheet">
+   <link href="{{ asset('assets/css/custom.css') }}?v=1" rel="stylesheet">
 
    @yield('styles')
 </head>

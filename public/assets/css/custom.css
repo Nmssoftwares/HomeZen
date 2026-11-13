@@ -22,7 +22,7 @@ body {
     margin: 0;
 }
 
-/* 1. Header Styling */
+/* 1. Header Styling (Fixed Dark Slate Theme & Clean Typography) */
 #header {
     position: fixed;
     top: 0;
@@ -30,7 +30,6 @@ body {
     right: 0;
     height: var(--header-height, 60px);
     background: #334e68 !important;
-    /* Exact Dark Slate/Navy Header Color */
     color: #ffffff !important;
     box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.15);
     padding-left: 20px;
@@ -42,10 +41,22 @@ body {
     justify-content: space-between;
 }
 
-#header .logo span,
-#header .header-page-title,
-#header .nav-link,
-#header .header-user-name,
+#header .logo span {
+    color: #ffffff !important;
+}
+
+#header .header-page-title {
+    color: #cbd5e1 !important;
+}
+
+#header .nav-link {
+    color: #ffffff !important;
+}
+
+#header .header-user-name {
+    color: #ffffff !important;
+}
+
 #header i {
     color: #ffffff !important;
 }
@@ -298,7 +309,7 @@ body.toggle-sidebar #footer {
 }
 
 .dt-button {
-    background: #ffffff !important;
+    background: #e9e9e9 !important;
     border: 1px solid #cbd5e1 !important;
     color: #334155 !important;
     padding: 5px 14px !important;
@@ -310,7 +321,7 @@ body.toggle-sidebar #footer {
 }
 
 .dt-button:hover {
-    background: #f8fafc !important;
+    background: #dfdfdf !important;
     border-color: #0f172a !important;
     color: #0f172a !important;
 }
@@ -335,7 +346,6 @@ body.toggle-sidebar #footer {
     box-shadow: 0 0 0 3px rgba(44, 111, 155, 0.15);
 }
 
-/* 9. Universal Action Buttons */
 .table-action-btns {
     display: flex;
     align-items: center;
@@ -398,4 +408,130 @@ body.toggle-sidebar #footer {
 .table-action-btns .btn-gear:hover {
     background: #22c55e;
     color: #fff;
+}
+
+#header .dropdown-menu {
+    background-color: #ffffff !important;
+    color: #1e293b !important;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2) !important;
+    border: 1px solid #e2e8f0 !important;
+    z-index: 99999 !important;
+}
+
+#header .dropdown-menu .dropdown-item {
+    color: #334155 !important;
+    background-color: transparent !important;
+}
+
+#header .dropdown-menu .dropdown-item:hover {
+    background-color: #f1f5f9 !important;
+    color: #0f172a !important;
+}
+
+#header .dropdown-menu .dropdown-item.text-danger:hover {
+    background-color: #fef2f2 !important;
+    color: #dc3545 !important;
+}
+
+#header .dropdown-menu .dropdown-header h6 {
+    color: #1e293b !important;
+}
+
+#header .dropdown-menu .dropdown-header span {
+    color: #64748b !important;
+}
+
+#header .nav-item.dropdown:hover .dropdown-menu {
+   display: block;
+   margin-top: 0;
+}
+
+#header .dropdown-menu {
+   background-color: #ffffff !important;
+   color: #1e293b !important;
+   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2) !important;
+   border: 1px solid #e2e8f0 !important;
+   border-radius: 12px !important;
+   padding: 8px !important;
+   z-index: 999999 !important;
+}
+
+#header .dropdown-menu .dropdown-item {
+   color: #334155 !important;
+   background-color: transparent !important;
+   border-radius: 6px;
+}
+
+#header .dropdown-menu .dropdown-item:hover {
+   background-color: #46698d !important;
+   color: #ffffff !important;
+}
+
+#header .dropdown-menu .dropdown-item.text-danger:hover {
+   background-color: #b84b4b !important;
+   color: #ffffff !important;
+}
+/* ==========================================================================
+   1. Excel & PDF Export Buttons Styling (#e9e9e9 background)
+   ========================================================================== */
+.dt-buttons {
+   margin-bottom: 15px;
+   display: inline-flex;
+   gap: 6px;
+}
+
+.dt-button, 
+.buttons-excel, 
+.buttons-pdf {
+   background: #e9e9e9 !important;
+   border: 1px solid #cbd5e1 !important;
+   color: #334155 !important;
+   padding: 5px 14px !important;
+   font-size: 13px !important;
+   font-weight: 500 !important;
+   border-radius: 4px !important;
+   box-shadow: none !important;
+   transition: all 0.2s ease;
+}
+
+.dt-button:hover, 
+.buttons-excel:hover, 
+.buttons-pdf:hover {
+   background: #dfdfdf !important;
+   border-color: #94a3b8 !important;
+   color: #0f172a !important;
+}
+
+#header .dropdown-menu {
+   background-color: #ffffff !important;
+   color: #1e293b !important;
+   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2) !important;
+   border: 1px solid #e2e8f0 !important;
+   border-radius: 12px !important;
+   padding: 8px !important;
+   z-index: 999999 !important;
+}
+
+#header .dropdown-menu .dropdown-item {
+   color: #334155 !important;
+   background-color: transparent !important;
+   border-radius: 6px;
+}
+
+#header .dropdown-menu .dropdown-item:hover {
+   background-color: #46698d !important;
+   color: #ffffff !important;
+}
+
+#header .dropdown-menu .dropdown-item.text-danger:hover {
+   background-color: #b84b4b !important;
+   color: #ffffff !important;
+}
+
+#header .dropdown-menu .dropdown-header h6 {
+   color: #1e293b !important;
+}
+
+#header .dropdown-menu .dropdown-header span {
+   color: #64748b !important;
 }

@@ -127,7 +127,7 @@
          buttons: [{
             extend: 'excel',
             text: 'Excel',
-            className: 'buttons-excel',
+            className: 'buttons-excel dt-button',
             exportOptions: {
                columns: [0, 1, 2, 3, 4],
                format: {
@@ -138,7 +138,7 @@
             }
          }, {
             text: 'PDF',
-            className: 'buttons-pdf',
+            className: 'buttons-pdf dt-button',
             action: function(e, dt, node, config) {
                window.location.href = "{{ route('superadmin.companies.export.pdf') }}";
             }
