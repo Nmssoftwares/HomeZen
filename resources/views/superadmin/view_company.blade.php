@@ -1,8 +1,10 @@
 @extends('superadmin.layouts.app')
 
 @section('content')
-<div class="pagetitle mb-3">
-   <h1 class="mb-0 fs-4 fw-bold text-dark">Household & User Management</h1>
+<div class="pagetitle d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+   <div class="d-flex align-items-center gap-2">
+      <h1 class="mb-0 fs-4 fw-bold text-dark">Household & User Management</h1>
+   </div>
 </div>
 
 <section class="section">
@@ -27,11 +29,6 @@
       </div>
    </div>
 </section>
-
-<!-- Floating Bottom-Right Add (+) Button -->
-<a href="{{ route('superadmin.companies.create') }}" title="Add Household" style="position: fixed; bottom: 25px; right: 25px; width: 55px; height: 55px; background-color: #ff9800; color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 15px rgba(255, 152, 0, 0.4); z-index: 9999; font-size: 24px; transition: transform 0.2s;">
-   <i class="bi bi-plus-lg"></i>
-</a>
 
 <!-- Password Reset Modal -->
 <div class="modal fade" id="changePasswordModal" tabindex="-1" aria-hidden="true">
@@ -111,6 +108,10 @@
       </div>
    </div>
 </div>
+
+<a href="{{ route('superadmin.companies.create') }}" title="View Households" style="position: fixed; bottom: 25px; right: 25px; width: 55px; height: 55px; background-color: #ff9800; color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 15px rgba(255, 152, 0, 0.4); z-index: 9999; font-size: 24px; transition: transform 0.2s;">
+   <i class="bi bi-plus"></i>
+</a>
 @endsection
 
 @section('scripts')
