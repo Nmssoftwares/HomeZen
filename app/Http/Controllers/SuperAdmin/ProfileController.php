@@ -20,9 +20,8 @@ class ProfileController extends Controller
         return view('superadmin.profile', $data);
     }
 
-    public function resetPassword(Request $request): \Illuminate\Http\JsonResponse
+    public function resetPassword(Request $request): JsonResponse
     {
-        // Yahan se current_password nikal diya gaya hai
         $request->validate([
             'password'         => 'required|string|min:6',
             'confirm_password' => 'required|same:password',
@@ -30,8 +29,6 @@ class ProfileController extends Controller
 
         try {
             $user = Auth::user();
-
-            // Direct naya password hash karke save kar dena hai
             $user->password = Hash::make($request->password);
             $user->save();
 
@@ -108,7 +105,6 @@ class ProfileController extends Controller
             ]);
         } catch (\Throwable $e) {
             Log::error('Profile Update Error: ' . $e->getMessage());
-
             return response()->json([
                 'status'  => 'error',
                 'message' => 'Failed to update profile.',
@@ -168,7 +164,6 @@ class ProfileController extends Controller
             ]);
         } catch (\Throwable $e) {
             Log::error('Profile Image Upload Error: ' . $e->getMessage());
-
             return response()->json([
                 'status'  => 'error',
                 'message' => 'Failed to upload profile image.',

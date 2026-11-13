@@ -34,13 +34,6 @@
    </div>
 </section>
 
-<!-- Floating Export Buttons -->
-<div class="floating-export-wrapper" style="position: fixed; bottom: 20px; right: 20px; z-index: 9999;">
-   <a href="javascript:void(0);" id="exportExcel" title="Export Excel" class="floating-export-option excel-btn"><i class="bi bi-file-earmark-excel"></i></a>
-   <a href="javascript:void(0);" id="exportPdf" title="Export PDF" class="floating-export-option pdf-btn"><i class="bi bi-file-earmark-pdf"></i></a>
-   <a href="javascript:void(0);" id="exportMainBtn" title="Export" class="floating-excel-btn"><i class="bi bi-download" id="exportMainIcon"></i></a>
-</div>
-
 <!-- Password Reset Modal -->
 <div class="modal fade" id="changePasswordModal" tabindex="-1" aria-hidden="true">
    <div class="modal-dialog modal-dialog-centered">

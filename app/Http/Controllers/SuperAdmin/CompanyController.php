@@ -24,15 +24,13 @@ class CompanyController extends Controller
 {
     public function index()
     {
-        $data['title'] = 'SuperAdmin - Companies';
+        $data['title'] = 'SuperAdmin - Households';
         return view('superadmin.view_company', $data);
     }
 
     public function datatable()
     {
-        $companies = Company::with(['users' => function ($q) {
-            $q->where('role', 2);
-        }, 'assignModules.module']);
+        $companies = Company::with(['users' => fn($q) => $q->where('role', 2), 'assignModules.module']);
 
         return DataTables::of($companies)
             ->addColumn('company_info', function ($row) {
@@ -58,29 +56,15 @@ class CompanyController extends Controller
 
                 return $html;
             })
-            ->addColumn('admin_name', function ($row) {
-                $admin = $row->users->first();
-                return $admin ? e($admin->first_name . ' ' . $admin->last_name) : '<span class="text-muted small">No Admin</span>';
-            })
-            ->addColumn('admin_email', function ($row) {
-                $admin = $row->users->first();
-                return $admin ? e($admin->email) : '-';
-            })
-            ->addColumn('admin_phone', function ($row) {
-                $admin = $row->users->first();
-                return $admin && $admin->phone ? e($admin->phone) : '-';
-            })
-            ->addColumn('status_badge', function ($row) {
-                return (int) $row->status === 1
-                    ? '<span class="badge bg-success">Active</span>'
-                    : '<span class="badge bg-danger">Inactive</span>';
-            })
+            ->addColumn('admin_name', fn($row) => optional($row->users->first())->first_name ? e($row->users->first()->first_name . ' ' . $row->users->first()->last_name) : '<span class="text-muted small">No Admin</span>')
+            ->addColumn('admin_email', fn($row) => optional($row->users->first())->email ? e($row->users->first()->email) : '-')
+            ->addColumn('admin_phone', fn($row) => optional($row->users->first())->phone ? e($row->users->first()->phone) : '-')
+            ->addColumn('status_badge', fn($row) => (int)$row->status === 1 ? '<span class="badge bg-success">Active</span>' : '<span class="badge bg-danger">Inactive</span>')
             ->addColumn('action', function ($row) {
-                $admin = $row->users->first();
-                $adminId = $admin ? $admin->id : '';
+                $adminId = optional($row->users->first())->id;
 
                 $html = '<div class="d-flex justify-content-center gap-1">';
-                $html .= '<a href="' . route('superadmin.companies.edit', $row->id) . '" class="btn btn-sm btn-outline-primary rounded-circle" title="Edit Company"><i class="bi bi-pencil"></i></a>';
+                $html .= '<a href="' . route('superadmin.companies.edit', $row->id) . '" class="btn btn-sm btn-outline-primary rounded-circle" title="Edit Household"><i class="bi bi-pencil"></i></a>';
 
                 if ($adminId) {
                     $html .= ' <button type="button" class="btn btn-sm btn-outline-success rounded-circle changePasswordBtn" data-userid="' . $adminId . '" data-bs-toggle="modal" data-bs-target="#changePasswordModal" title="Reset Admin Password"><i class="bi bi-key"></i></button>';
@@ -96,44 +80,33 @@ class CompanyController extends Controller
 
     public function exportPdf()
     {
-        $companies = Company::with(['users' => function ($q) {
-            $q->where('role', 2);
-        }])->get();
-
-        $currentCompany = null;
-        if (Auth::check() && Auth::user()->company_id) {
-            $currentCompany = Company::find(Auth::user()->company_id);
-        }
+        $companies = Company::with(['users' => fn($q) => $q->where('role', 2)])->get();
+        $currentCompany = Auth::check() && Auth::user()->company_id ? Company::find(Auth::user()->company_id) : null;
 
         $data = [
             'companies'    => $companies,
-            'company_name' => $currentCompany ? $currentCompany->company_name : 'SuperAdmin Portal',
+            'company_name' => $currentCompany ? $currentCompany->company_name : 'HomeZen SuperAdmin',
             'company_logo' => $currentCompany ? $currentCompany->company_logo : 'assets/img/main-logo.png'
         ];
 
-        $pdf = Pdf::loadView('superadmin.pdf.companies_list', $data);
-
-        return $pdf->download('Companies_List_' . date('Ymd_His') . '.pdf');
+        return Pdf::loadView('superadmin.pdf.companies_list', $data)
+            ->download('Households_List_' . date('Ymd_His') . '.pdf');
     }
 
     public function create()
     {
-        $data['title'] = 'SuperAdmin - Add Company';
+        $data['title'] = 'SuperAdmin - Add Household';
         $data['groupedModules'] = Module::where('status', 1)
             ->orderBy('group_order', 'asc')
             ->get()
-            ->groupBy(function ($item) {
-                return $item->group_name ?: 'General Modules';
-            });
+            ->groupBy(fn($item) => $item->group_name ?: 'General Modules');
 
         return view('superadmin.add_company', $data);
     }
 
     public function store(Request $request, TodoMasterDataService $todoMasterDataService): JsonResponse
     {
-        $request->merge([
-            'phone' => preg_replace('/\D/', '', $request->phone)
-        ]);
+        $request->merge(['phone' => preg_replace('/\D/', '', $request->phone)]);
 
         $request->validate([
             'company_name'    => 'required|string|max:255',
@@ -148,16 +121,9 @@ class CompanyController extends Controller
 
             'first_name'      => 'required|string|max:100',
             'last_name'       => 'required|string|max:100',
-            'employee_code'   => 'nullable|string|max:30',
-            'designation'     => 'nullable|string|max:100',
-            'department'      => 'nullable|string|max:100',
-            'dob'             => 'nullable|date',
-            'joining_date'    => 'nullable|date',
-            'gender'          => 'nullable|in:1,2,3',
             'email'           => 'required|email|max:255|unique:users,email',
             'phone'           => 'required|digits:10|unique:users,phone',
             'password'        => 'required|string|min:6',
-
             'modules'         => 'required|array|min:1',
             'modules.*'       => 'integer|exists:modules,id',
         ]);
@@ -177,7 +143,6 @@ class CompanyController extends Controller
         DB::beginTransaction();
 
         try {
-            // 1. Create Company
             $company = Company::create([
                 'company_name'    => $request->company_name,
                 'company_code'    => $request->company_code ? strtoupper($request->company_code) : null,
@@ -191,12 +156,11 @@ class CompanyController extends Controller
                 'status'          => 1,
             ]);
 
-            // 2. Create Company Admin User (Role = 2)
             User::create([
                 'first_name'    => $request->first_name,
                 'last_name'     => $request->last_name,
                 'employee_code' => $request->employee_code,
-                'designation'   => $request->designation ?: 'Company Admin',
+                'designation'   => $request->designation ?: 'House Admin',
                 'department'    => $request->department ?: 'Management',
                 'dob'           => $request->dob,
                 'joining_date'  => $request->joining_date ?: now()->format('Y-m-d'),
@@ -209,7 +173,6 @@ class CompanyController extends Controller
                 'phone'         => $request->phone,
             ]);
 
-            // 3. Assign Modules
             foreach ($request->modules as $moduleId) {
                 AssignModule::create([
                     'company_id' => $company->id,
@@ -217,37 +180,25 @@ class CompanyController extends Controller
                 ]);
             }
 
-            // 4. 🔥 Generate 4 Default Global Policies (Viewer, Contributor, Manager, Administrator) for all assigned modules at once
             self::generateDefaultCompanyRoles($company->id, $request->modules);
-
-            // 5. Default Seed Master Data
             $todoMasterDataService->createForCompany($company->id);
 
             DB::commit();
 
-            return response()->json([
-                'status'  => 'success',
-                'message' => 'Company and admin account created successfully with default role tiers.',
-            ]);
+            return response()->json(['status' => 'success', 'message' => 'Household and admin account created successfully.']);
         } catch (\Throwable $e) {
             DB::rollBack();
             if ($logoPath && File::exists(public_path($logoPath))) {
                 File::delete(public_path($logoPath));
             }
-
             Log::error('Company Store Error: ' . $e->getMessage());
-
-            return response()->json([
-                'status'  => 'error',
-                'message' => 'Failed to create company.',
-                'error'   => $e->getMessage(),
-            ], 500);
+            return response()->json(['status' => 'error', 'message' => 'Failed to create household.', 'error' => $e->getMessage()], 500);
         }
     }
 
     public function edit(int $id)
     {
-        $data['title']   = 'SuperAdmin - Edit Company';
+        $data['title']   = 'SuperAdmin - Edit Household';
         $data['company'] = Company::findOrFail($id);
         $data['user']    = User::where(['company_id' => $id, 'role' => 2])->first();
 
@@ -263,9 +214,7 @@ class CompanyController extends Controller
             return response()->json(['status' => 'error', 'message' => 'Admin user record not found.'], 404);
         }
 
-        $request->merge([
-            'phone' => preg_replace('/\D/', '', $request->phone)
-        ]);
+        $request->merge(['phone' => preg_replace('/\D/', '', $request->phone)]);
 
         $request->validate([
             'company_name'    => 'required|string|max:255',
@@ -281,12 +230,6 @@ class CompanyController extends Controller
 
             'first_name'      => 'required|string|max:100',
             'last_name'       => 'required|string|max:100',
-            'employee_code'   => 'nullable|string|max:30',
-            'designation'     => 'nullable|string|max:100',
-            'department'      => 'nullable|string|max:100',
-            'dob'             => 'nullable|date',
-            'joining_date'    => 'nullable|date',
-            'gender'          => 'nullable|in:1,2,3',
             'email'           => 'required|email|max:255|unique:users,email,' . $user->id,
             'phone'           => 'required|digits:10|unique:users,phone,' . $user->id,
         ]);
@@ -333,19 +276,11 @@ class CompanyController extends Controller
             ]);
 
             DB::commit();
-
-            return response()->json([
-                'status'  => 'success',
-                'message' => 'Company and admin profile updated successfully.',
-            ]);
+            return response()->json(['status' => 'success', 'message' => 'Household profile updated successfully.']);
         } catch (\Throwable $e) {
             DB::rollBack();
             Log::error('Company Update Error: ' . $e->getMessage());
-
-            return response()->json([
-                'status'  => 'error',
-                'message' => 'Failed to update company.',
-            ], 500);
+            return response()->json(['status' => 'error', 'message' => 'Failed to update household.'], 500);
         }
     }
 
@@ -357,26 +292,20 @@ class CompanyController extends Controller
         ]);
 
         $user = User::findOrFail($request->id);
-        $user->password = Hash::make($request->password);
-        $user->save();
+        $user->update(['password' => Hash::make($request->password)]);
 
-        return response()->json([
-            'status'  => 'success',
-            'message' => 'Admin password updated successfully.',
-        ]);
+        return response()->json(['status' => 'success', 'message' => 'Admin password updated successfully.']);
     }
 
     public function getCompanyModules(Request $request): JsonResponse
     {
-        $companyId       = (int) $request->company_id;
+        $companyId       = (int)$request->company_id;
         $assignedModules = AssignModule::where('company_id', $companyId)->pluck('module_id')->toArray();
 
         $modules = Module::where('status', 1)
             ->orderBy('group_order', 'asc')
             ->get()
-            ->groupBy(function ($item) {
-                return $item->group_name ?: 'General Modules';
-            });
+            ->groupBy(fn($item) => $item->group_name ?: 'General Modules');
 
         return response()->json([
             'status'          => 'success',
@@ -393,94 +322,60 @@ class CompanyController extends Controller
             'modules.*'  => 'integer|exists:modules,id',
         ]);
 
-        $companyId = (int) $request->company_id;
+        $companyId = (int)$request->company_id;
         $modules   = $request->modules;
 
         DB::transaction(function () use ($companyId, $modules) {
             AssignModule::where('company_id', $companyId)->delete();
 
             foreach ($modules as $moduleId) {
-                AssignModule::create([
-                    'company_id' => $companyId,
-                    'module_id'  => $moduleId,
-                ]);
+                AssignModule::create(['company_id' => $companyId, 'module_id' => $moduleId]);
             }
 
-            // 🔥 DEVELOPER EXCEPTION: Only for Company ID 1 (Testing purpose)
-            // Real companies won't overwrite roles once customized by company admins.
             if ($companyId == 1) {
-                // Clear and regenerate default roles for company 1 testing
                 Role::where('company_id', $companyId)->delete();
                 self::generateDefaultCompanyRoles($companyId, $modules);
             }
         });
 
-        return response()->json([
-            'status'  => 'success',
-            'message' => 'Company modules updated successfully.',
-        ]);
+        return response()->json(['status' => 'success', 'message' => 'Household modules updated successfully.']);
     }
 
-    /**
-     * Helper to generate 4 core global company policies (Viewer, Contributor, Manager, Administrator)
-     * covering all modules assigned to the company.
-     */
     private static function generateDefaultCompanyRoles(int $companyId, array $moduleIds)
     {
         $modules = Module::whereIn('id', $moduleIds)->where('status', 1)->get();
-        if ($modules->isEmpty()) {
-            return;
-        }
+        if ($modules->isEmpty()) return;
 
         $shortNames = $modules->pluck('short_name')->filter()->toArray();
-        if (empty($shortNames)) {
-            return;
-        }
+        if (empty($shortNames)) return;
 
-        // Fetch corresponding permissions for all assigned modules
-        $viewPermIds = Permission::whereIn('module_short_name', $shortNames)->where('name', 'LIKE', '%.view')->pluck('id')->toArray();
+        $viewPermIds    = Permission::whereIn('module_short_name', $shortNames)->where('name', 'LIKE', '%.view')->pluck('id')->toArray();
         $addEditPermIds = Permission::whereIn('module_short_name', $shortNames)->where('name', 'LIKE', '%.add_edit')->pluck('id')->toArray();
-        $deletePermIds = Permission::whereIn('module_short_name', $shortNames)->where('name', 'LIKE', '%.delete')->pluck('id')->toArray();
-        $exportPermIds = Permission::whereIn('module_short_name', $shortNames)->where('name', 'LIKE', '%.export')->pluck('id')->toArray();
-        $adminPermIds = Permission::whereIn('module_short_name', $shortNames)->where('name', 'LIKE', '%.admin_access')->pluck('id')->toArray();
+        $deletePermIds  = Permission::whereIn('module_short_name', $shortNames)->where('name', 'LIKE', '%.delete')->pluck('id')->toArray();
+        $exportPermIds  = Permission::whereIn('module_short_name', $shortNames)->where('name', 'LIKE', '%.export')->pluck('id')->toArray();
+        $adminPermIds   = Permission::whereIn('module_short_name', $shortNames)->where('name', 'LIKE', '%.admin_access')->pluck('id')->toArray();
 
-        // 1. Viewer Role (Only View across all assigned modules)
         if (!empty($viewPermIds)) {
-            $roleViewer = Role::firstOrCreate(
-                ['company_id' => $companyId, 'name' => 'Viewer'],
-                ['description' => 'Default read-only access across subscribed modules.']
-            );
-            $roleViewer->permissions()->syncWithoutDetaching($viewPermIds);
+            Role::firstOrCreate(['company_id' => $companyId, 'name' => 'Viewer'], ['description' => 'Read-only access.'])
+                ->permissions()->syncWithoutDetaching($viewPermIds);
         }
 
-        // 2. Contributor Role (View + Add/Edit)
         $contributorIds = array_merge($viewPermIds, $addEditPermIds);
         if (!empty($contributorIds)) {
-            $roleContributor = Role::firstOrCreate(
-                ['company_id' => $companyId, 'name' => 'Contributor'],
-                ['description' => 'Can view, create, and update records across subscribed modules.']
-            );
-            $roleContributor->permissions()->syncWithoutDetaching($contributorIds);
+            Role::firstOrCreate(['company_id' => $companyId, 'name' => 'Contributor'], ['description' => 'Can view, create, and update records.'])
+                ->permissions()->syncWithoutDetaching($contributorIds);
         }
 
-        // 3. Manager Role (View + Add/Edit + Delete + Export)
         $managerIds = array_merge($viewPermIds, $addEditPermIds, $deletePermIds, $exportPermIds);
         if (!empty($managerIds)) {
-            $roleManager = Role::firstOrCreate(
-                ['company_id' => $companyId, 'name' => 'Manager'],
-                ['description' => 'Full operational access including deletions and reports export.']
-            );
-            $roleManager->permissions()->syncWithoutDetaching($managerIds);
+            Role::firstOrCreate(['company_id' => $companyId, 'name' => 'Manager'], ['description' => 'Full operational access.'])
+                ->permissions()->syncWithoutDetaching($managerIds);
         }
 
-        // 4. Administrator Role (Full Access / Admin Access)
         $adminAllIds = array_merge($viewPermIds, $addEditPermIds, $deletePermIds, $exportPermIds, $adminPermIds);
         if (!empty($adminAllIds)) {
-            $roleAdmin = Role::firstOrCreate(
-                ['company_id' => $companyId, 'name' => 'Administrator'],
-                ['description' => 'Complete administrative privileges over all subscribed modules.']
-            );
-            $roleAdmin->permissions()->syncWithoutDetaching($adminAllIds);
+            Role::firstOrCreate(['company_id' => $companyId, 'name' => 'Administrator'], ['description' => 'Complete administrative privileges.'])
+                ->permissions()->syncWithoutDetaching($adminAllIds);
         }
     }
 }
