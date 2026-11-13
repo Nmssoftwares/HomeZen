@@ -13,11 +13,25 @@ return new class extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
+            $table->string('first_name', 100);
+            $table->string('last_name', 100);
+            $table->string('employee_code', 30)->nullable();
+            $table->string('designation', 100)->nullable();
+            $table->string('department', 100)->nullable();
+            $table->date('dob')->nullable();
+            $table->date('joining_date')->nullable();
+            $table->tinyInteger('gender')->nullable()->comment('1=Male, 2=Female, 3=Other');
             $table->string('email')->unique();
-            $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
+            $table->unsignedInteger('company_id')->default(1)->index()->comment('Foreign reference to companies.id');
+            $table->tinyInteger('role')->default(3)->index()->comment('1=Super Admin, 2=Company Admin, 3=User / Employee');
+            $table->tinyInteger('status')->default(1)->comment('1=Active, 0=Inactive');
+            $table->boolean('allow_remote_punch')->default(0)->comment('Bypasses IP & Geofence restriction');
+            $table->string('phone', 20)->unique()->nullable();
+            $table->string('profile_image')->nullable();
+            $table->timestamp('email_verified_at')->nullable();
             $table->rememberToken();
+            $table->timestamp('last_login_at')->nullable();
             $table->timestamps();
         });
 

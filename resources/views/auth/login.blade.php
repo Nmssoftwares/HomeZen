@@ -152,13 +152,6 @@
 						<span class="text-danger small mt-1 d-block" id="password_error"></span>
 					</div>
 
-					<div class="col-12">
-						<div class="form-check mb-0">
-							<input class="form-check-input" type="checkbox" name="remember" id="rememberMe">
-							<label class="form-check-label text-muted small" for="rememberMe">Remember me</label>
-						</div>
-					</div>
-
 					<div class="col-12 mt-4">
 						<button class="btn btn-primary w-100 shadow-sm" type="submit" id="loginButton">
 							<i class="bi bi-box-arrow-in-right me-1"></i> Sign In
