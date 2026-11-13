@@ -454,7 +454,7 @@ body.toggle-sidebar #footer {
     color: #fff;
 }
 
-/* --- Exact Edge Filter & Clean Left Dropdown Fix --- */
+/* --- Final Pure CSS & JS Controlled Edge Filter --- */
 .card-soft {
     position: relative !important;
     overflow: visible !important;
@@ -482,27 +482,25 @@ body.toggle-sidebar #footer {
     padding: 0 !important;
 }
 
-.card-edge-filter-btn::after {
-    display: none !important;
-}
-
 .card-edge-filter-btn:hover {
     background-color: #15416f !important;
 }
 
-/* Dropdown ko button ke left side me bahar force karne ke liye */
-.card-edge-filter-wrap .dropdown-menu {
+/* Custom Dropdown Menu Container controlled via JS */
+.custom-edge-dropdown {
+    display: none;
     position: absolute !important;
-    top: 0 !important;
     right: 50px !important;
-    left: auto !important;
-    transform: none !important;
-    /* Bootstrap Popper transform hatane ke liye */
+    top: 0 !important;
+    width: 240px;
+    background: #ffffff !important;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25) !important;
     border-radius: 8px !important;
     border: 1px solid #cbd5e1 !important;
     padding: 15px !important;
-    min-width: 240px;
-    background-color: #ffffff !important;
     z-index: 999999 !important;
+}
+
+.custom-edge-dropdown.show {
+    display: block !important;
 }

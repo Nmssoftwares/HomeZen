@@ -1,24 +1,15 @@
 @extends('superadmin.layouts.app')
 
 @section('content')
-<div class="pagetitle d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
-   <div>
-      <h1 class="mb-0 fs-4 fw-bold text-dark">System Modules</h1>
-      <div class="text-muted small mt-1">Configure accessible global modules, functional suites, and system status.</div>
-   </div>
-</div>
-
 <section class="section">
    <div class="row">
       <div class="col-lg-12">
-
-         <!-- Soft Card with Outer Edge Sticky Filter Button -->
          <div class="card-soft p-4 position-relative">
-            <div class="card-edge-filter-wrap dropdown">
-               <button class="card-edge-filter-btn dropdown-toggle hide-arrow" type="button" id="cardFilterDropdown" data-bs-toggle="dropdown" data-bs-popper="static" aria-expanded="false" title="Filter Modules">
+            <div class="card-edge-filter-wrap">
+               <button class="card-edge-filter-btn" type="button" id="customFilterToggleBtn" title="Filter Modules">
                   <i class="bi bi-funnel-fill fs-5"></i>
                </button>
-               <div class="dropdown-menu dropdown-menu-end shadow-lg" aria-labelledby="cardFilterDropdown" data-bs-popper="static">
+               <div class="custom-edge-dropdown shadow-lg" id="customFilterMenu">
                   <label class="form-label small fw-semibold text-muted mb-1">Filter by Functional Suite:</label>
                   <select class="form-select form-select-sm" id="groupFilter">
                      <option value="">All Groups</option>
@@ -125,6 +116,23 @@
          ]
       });
 
+      // --- Custom JavaScript Toggle Handler for Edge Filter ---
+      $('#customFilterToggleBtn').on('click', function(e) {
+         e.stopPropagation();
+         $('#customFilterMenu').toggleClass('show');
+      });
+
+      // Dropdown ke andar click karne par box band na ho
+      $('#customFilterMenu').on('click', function(e) {
+         e.stopPropagation();
+      });
+
+      // Kahin aur click karne par dropdown band ho jaye
+      $(document).on('click', function() {
+         $('#customFilterMenu').removeClass('show');
+      });
+
+      // Reload Table when Group Filter changes
       $('#groupFilter').on('change', function() {
          dataTable.ajax.reload();
       });
