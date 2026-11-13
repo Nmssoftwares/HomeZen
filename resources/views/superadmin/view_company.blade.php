@@ -1,30 +1,24 @@
 @extends('superadmin.layouts.app')
 
 @section('content')
-<div class="pagetitle d-flex justify-content-between align-items-center mb-3">
-   <div>
-      <h1 class="mb-0">Companies</h1>
-      <div class="text-muted small mt-1">Manage registered companies, system administrators, and module permissions.</div>
-   </div>
-   <a href="{{ route('superadmin.companies.create') }}" class="btn btn-primary" style="border-radius: 8px; font-weight: 600;">
-      <i class="bi bi-plus-lg me-1"></i> Add Company
-   </a>
+<div class="pagetitle mb-3">
+   <h1 class="mb-0 fs-4 fw-bold text-dark">Household & User Management</h1>
 </div>
 
 <section class="section">
    <div class="row">
       <div class="col-lg-12">
-         <div class="card-soft">
-            <div class="p-3">
-               <table class="table table-bordered align-middle" id="companiesTable" width="100%">
+         <div class="card-soft p-4">
+            <div class="table-responsive">
+               <table class="table table-hover align-middle w-100" id="companiesTable">
                   <thead>
                      <tr>
-                        <th>Company Details</th>
+                        <th>Household Details</th>
                         <th>Admin Name</th>
                         <th>Admin Email</th>
                         <th class="text-center">Admin Phone</th>
                         <th class="text-center">Status</th>
-                        <th class="text-center">Action</th>
+                        <th class="text-center">Actions</th>
                      </tr>
                   </thead>
                </table>
@@ -34,10 +28,15 @@
    </div>
 </section>
 
+<!-- Floating Bottom-Right Add (+) Button -->
+<a href="{{ route('superadmin.companies.create') }}" title="Add Household" style="position: fixed; bottom: 25px; right: 25px; width: 55px; height: 55px; background-color: #ff9800; color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 15px rgba(255, 152, 0, 0.4); z-index: 9999; font-size: 24px; transition: transform 0.2s;">
+   <i class="bi bi-plus-lg"></i>
+</a>
+
 <!-- Password Reset Modal -->
 <div class="modal fade" id="changePasswordModal" tabindex="-1" aria-hidden="true">
    <div class="modal-dialog modal-dialog-centered">
-      <div class="modal-content border-0 shadow-lg" style="border-radius: 16px;">
+      <div class="modal-content border-0 shadow-lg" style="border-radius: 12px;">
          <div class="modal-header border-0 pb-0">
             <h5 class="modal-title fw-bold text-dark"><i class="bi bi-key text-primary me-2"></i>Reset Admin Password</h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
@@ -70,17 +69,17 @@
             </div>
             <div class="modal-footer border-0 pt-0">
                <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
-               <button type="submit" class="btn btn-primary px-3" id="updatePasswordBtn">Update Password</button>
+               <button type="submit" class="btn px-4" id="updatePasswordBtn" style="background-color: #334e68; color: #fff;">Update Password</button>
             </div>
          </form>
       </div>
    </div>
 </div>
 
-<!-- Manage Modules Modal (Grouped Layout) -->
+<!-- Manage Modules Modal -->
 <div class="modal fade" id="changeCompanyModule" tabindex="-1" aria-hidden="true">
    <div class="modal-dialog modal-dialog-centered modal-lg">
-      <div class="modal-content border-0 shadow-lg" style="border-radius: 16px;">
+      <div class="modal-content border-0 shadow-lg" style="border-radius: 12px;">
          <div class="modal-header border-bottom py-3 px-4">
             <div class="d-flex align-items-center gap-2">
                <div class="rounded bg-primary-subtle text-primary p-2 d-flex align-items-center justify-content-center">
@@ -88,7 +87,7 @@
                </div>
                <div>
                   <h5 class="modal-title fw-bold text-dark mb-0">Manage Subscribed Modules</h5>
-                  <small class="text-muted">Configure active groups and features for this company.</small>
+                  <small class="text-muted">Configure active groups and features for this household.</small>
                </div>
             </div>
             <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
@@ -96,7 +95,7 @@
          </div>
          <div class="modal-body p-4" style="max-height: 70vh; overflow-y: auto;">
             <div class="d-flex justify-content-between align-items-center mb-3">
-               <span class="text-muted small">Select or toggle entire functional suites:</span>
+               <span class="text-muted small">Select or toggle features:</span>
                <div class="d-flex gap-1">
                   <button type="button" class="btn btn-sm btn-outline-primary py-0 px-2" id="modalSelectAll">Select All</button>
                   <button type="button" class="btn btn-sm btn-outline-secondary py-0 px-2" id="modalDeselectAll">Deselect All</button>
@@ -107,7 +106,7 @@
          </div>
          <div class="modal-footer border-top py-2 px-4">
             <button class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
-            <button class="btn btn-primary px-4" id="saveModules">Save Changes</button>
+            <button class="btn px-4" id="saveModules" style="background-color: #334e68; color: #fff;">Save Changes</button>
          </div>
       </div>
    </div>
@@ -135,6 +134,12 @@
                      return data ? data.replace(/<[^>]*>?/gm, ' ').replace(/\s+/g, ' ').trim() : '';
                   }
                }
+            }
+         }, {
+            text: 'PDF',
+            className: 'buttons-pdf',
+            action: function(e, dt, node, config) {
+               window.location.href = "{{ route('superadmin.companies.export.pdf') }}";
             }
          }],
          columnDefs: [{
@@ -170,43 +175,21 @@
          ]
       });
 
-      $('#exportMainBtn').on('click', function(e) {
-         e.preventDefault();
-         $('.floating-export-wrapper').toggleClass('active');
-      });
-      $('#exportExcel').on('click', function() {
-         dataTable.button('.buttons-excel').trigger();
-         $('.floating-export-wrapper').removeClass('active');
-      });
-      $('#exportPdf').on('click', function() {
-         window.location.href = "{{ route('superadmin.companies.export.pdf') }}";
-         $('.floating-export-wrapper').removeClass('active');
-      });
-
-      // Clear password error on typing
       $('#password, #confirm_password').on('input', function() {
          $(this).removeClass('is-invalid');
          $('#' + $(this).attr('id') + '_error').html('');
       });
 
-      // Password Reset Modal Open Handler
       $(document).on('click', '.changePasswordBtn', function() {
          $('#userId').val($(this).data('userid'));
-
-         // Clear fields and remove errors
          $('#password, #confirm_password').val('').removeClass('is-invalid');
          $('.error').html('');
-
-         // Reset eye icon and type back to password
          $('#password, #confirm_password').attr('type', 'password');
          $('.toggle-modal-password i').removeClass('bi-eye-slash').addClass('bi-eye');
       });
 
-      // Submit Password Modal Logic
       $('#passwordModalForm').on('submit', function(e) {
          e.preventDefault();
-
-         // 1. Reset Errors
          let isValid = true;
          $('.error').html('');
          $('#password, #confirm_password').removeClass('is-invalid');
@@ -214,7 +197,6 @@
          const password = $('#password').val();
          const confirmPassword = $('#confirm_password').val();
 
-         // 2. Client Side Validations
          if (!password) {
             $('#password_error').html('Password is required.');
             $('#password').addClass('is-invalid');
@@ -235,10 +217,8 @@
             isValid = false;
          }
 
-         // Stop execution if validation fails
          if (!isValid) return;
 
-         // 3. AJAX Submission
          const btn = $('#updatePasswordBtn');
          btn.prop('disabled', true).html('<span class="spinner-border spinner-border-sm me-1"></span>Updating...');
          $('#nms-loader-overlay').addClass('active');
@@ -261,22 +241,19 @@
             error: function(xhr) {
                btn.prop('disabled', false).text('Update Password');
                $('#nms-loader-overlay').removeClass('active');
-
-               // Server-side errors
                if (xhr.status === 422 && xhr.responseJSON.errors) {
                   $.each(xhr.responseJSON.errors, function(key, val) {
                      $('#' + key + '_error').html(val[0]);
                      $('#' + key).addClass('is-invalid');
                   });
                } else {
-                  alert(xhr.responseJSON && xhr.responseJSON.message ? xhr.responseJSON.message : 'Error updating password.');
+                  alert(xhr.responseJSON?.message || 'Error updating password.');
                }
             }
          });
       });
    });
 
-   // Load & Render Grouped Modules Modal
    function changeCompanyModuleBtn(companyId) {
       $('#company_id').val(companyId);
       $('#modules_modal_error').html('');
@@ -293,10 +270,8 @@
          },
          success: function(response) {
             let html = '<div class="row g-3">';
-
             $.each(response.groupedModules, function(groupName, modules) {
                const groupSlug = groupName.toLowerCase().replace(/[^a-z0-9]/g, '-');
-
                let groupModulesHtml = '';
                let totalGroupItems = modules.length;
                let checkedGroupItems = 0;
@@ -306,11 +281,11 @@
                   if (isChecked) checkedGroupItems++;
 
                   groupModulesHtml += `
-                     <div class="p-2 border rounded d-flex align-items-center justify-content-between bg-white mb-1 shadow-2xs">
+                     <div class="p-2 border rounded d-flex align-items-center justify-content-between bg-white mb-1">
                         <label class="form-check-label small fw-medium text-dark mb-0" for="modal_mod_${m.id}" style="cursor: pointer;">
                            <i class="${m.icon || 'bi bi-app'} text-primary me-1"></i> ${m.name}
                         </label>
-                        <div class="form-check form-switch mb-0">
+                        <div class="form-check mb-0">
                            <input class="form-check-input modal-mod-checkbox modal-group-item-${groupSlug}" type="checkbox" name="modal_modules[]" value="${m.id}" id="modal_mod_${m.id}" data-group="${groupSlug}" ${isChecked ? 'checked' : ''}>
                         </div>
                      </div>
@@ -321,10 +296,10 @@
 
                html += `
                   <div class="col-md-6">
-                     <div class="card border shadow-none h-100" style="border-radius: 10px; background: #fafbfe;">
+                     <div class="card border shadow-none h-100" style="border-radius: 8px; background: #fafbfe;">
                         <div class="card-header bg-light py-2 px-3 d-flex align-items-center justify-content-between border-bottom">
                            <span class="fw-bold small text-dark mb-0">${groupName}</span>
-                           <div class="form-check form-switch mb-0">
+                           <div class="form-check mb-0">
                               <input class="form-check-input modal-group-master-switch" type="checkbox" id="modal_grp_${groupSlug}" data-group="${groupSlug}" ${isAllGroupChecked ? 'checked' : ''} title="Toggle Entire Group">
                            </div>
                         </div>
@@ -335,9 +310,7 @@
                   </div>
                `;
             });
-
             html += '</div>';
-
             $('#moduleCheckboxContainer').html(html);
             $('#nms-loader-overlay').removeClass('active');
          },
@@ -348,14 +321,12 @@
       });
    }
 
-   // Modal Group Master Switch Toggle
    $(document).on('change', '.modal-group-master-switch', function() {
       const groupSlug = $(this).data('group');
       const isChecked = $(this).is(':checked');
       $('.modal-group-item-' + groupSlug).prop('checked', isChecked);
    });
 
-   // Modal Individual Checkbox Change
    $(document).on('change', '.modal-mod-checkbox', function() {
       const groupSlug = $(this).data('group');
       const total = $('.modal-group-item-' + groupSlug).length;
@@ -363,7 +334,6 @@
       $('#modal_grp_' + groupSlug).prop('checked', total === checked);
    });
 
-   // Modal Global Select / Deselect All
    $('#modalSelectAll').on('click', function() {
       $('.modal-mod-checkbox, .modal-group-master-switch').prop('checked', true);
    });
@@ -371,8 +341,6 @@
       $('.modal-mod-checkbox, .modal-group-master-switch').prop('checked', false);
    });
 
-   // Save Modal Modules
-   // Save Modal Modules
    $('#saveModules').on('click', function() {
       const companyId = $('#company_id').val();
       let modules = [];
@@ -380,15 +348,10 @@
          modules.push($(this).val());
       });
 
-      // Validation: Agar ek bhi module select nahi kiya
       if (modules.length === 0) {
-         // showAlert popup function call
-         if (typeof showAlert === 'function') {
-            showAlert('danger', 'Please select at least one module.');
-         } else {
-            alert('Please select at least one module.');
-         }
-         return; // Yahan se execution rok dega
+         if (typeof showAlert === 'function') showAlert('danger', 'Please select at least one module.');
+         else alert('Please select at least one module.');
+         return;
       }
 
       const btn = $(this);
@@ -412,26 +375,18 @@
          },
          error: function() {
             btn.prop('disabled', false).text('Save Changes');
-            if (typeof showAlert === 'function') {
-               showAlert('danger', 'Error updating modules.');
-            } else {
-               alert('Error updating modules.');
-            }
+            if (typeof showAlert === 'function') showAlert('danger', 'Error updating modules.');
+            else alert('Error updating modules.');
             $('#nms-loader-overlay').removeClass('active');
          }
       });
    });
 
-   // Password Eye Icon Toggle Logic
    $(document).on('click', '.toggle-modal-password', function() {
       const targetId = $(this).data('target');
       const targetField = $(targetId);
       const isPassword = targetField.attr('type') === 'password';
-
-      // Type switch karein
       targetField.attr('type', isPassword ? 'text' : 'password');
-
-      // Icon change karein
       $(this).find('i').toggleClass('bi-eye bi-eye-slash');
    });
 </script>

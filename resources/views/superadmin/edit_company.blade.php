@@ -2,118 +2,135 @@
 
 @section('content')
 <div class="pagetitle d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
-   <div>
-      <h1 class="mb-0">Edit Household</h1>
-      <div class="text-muted small mt-1">Update household profile, settings, and primary administrator details.</div>
+   <div class="d-flex align-items-center gap-2">
+      <a href="{{ route('superadmin.companies.index') }}" class="text-dark fs-5 text-decoration-none"><i class="bi bi-arrow-left"></i></a>
+      <h1 class="mb-0 fs-4 fw-bold text-dark">Edit Household</h1>
    </div>
-   <a href="{{ route('superadmin.companies.index') }}" class="btn btn-outline-secondary d-flex align-items-center gap-1 shadow-sm" style="border-radius: 8px; font-weight: 600;">
-      <i class="bi bi-eye"></i> View Households
-   </a>
 </div>
 
 <section class="section">
    <div class="row">
       <div class="col-lg-12">
-         <div class="card-soft">
-            <div class="card-body p-4">
-               <form class="row g-3" id="editForm" enctype="multipart/form-data" novalidate>
-                  @csrf
-                  <input type="hidden" name="_method" value="PUT">
+         <div class="card-soft p-4 bg-white shadow-sm">
+            <form id="editForm" enctype="multipart/form-data" novalidate>
+               @csrf
+               <input type="hidden" name="_method" value="PUT">
 
-                  <!-- 1. Household Information -->
-                  <div class="col-12">
-                     <div class="d-flex justify-content-between align-items-center">
-                        <h6 class="fw-bold text-primary mb-0"><i class="bi bi-building me-2"></i>1. Household Information</h6>
-                        <span class="badge bg-primary-subtle text-primary border" style="font-size: 11px;">Tenant Details</span>
-                     </div>
-                     <hr class="mt-2 mb-3">
-                  </div>
+               <!-- 1. Household Information -->
+               <div class="section-title mt-0">Household Information</div>
 
+               <div class="row g-4">
                   <div class="col-md-5">
-                     <label for="company_name" class="form-label fw-semibold">Household Name <span class="text-danger">*</span></label>
-                     <input type="text" class="form-control" id="company_name" name="company_name" value="{{ old('company_name', $company->company_name) }}" required>
-                     <small class="text-danger error" id="company_name_error"></small>
-                  </div>
-
-                  <div class="col-md-3">
-                     <label for="company_code" class="form-label fw-semibold">Code / Prefix</label>
-                     <input type="text" class="form-control text-uppercase" id="company_code" name="company_code" value="{{ old('company_code', $company->company_code) }}" maxlength="10">
-                     <small class="text-danger error" id="company_code_error"></small>
-                  </div>
-
-                  <div class="col-md-2">
-                     <label for="status" class="form-label fw-semibold">Status <span class="text-danger">*</span></label>
-                     <select class="form-select" id="status" name="status">
-                        <option value="1" {{ $company->status == 1 ? 'selected' : '' }}>Active</option>
-                        <option value="0" {{ $company->status == 0 ? 'selected' : '' }}>Inactive</option>
-                     </select>
-                  </div>
-
-                  <div class="col-md-2">
-                     <label for="company_logo" class="form-label fw-semibold">Update Logo</label>
-                     <input type="file" class="form-control" id="company_logo" name="company_logo" accept="image/*">
-                  </div>
-
-                  <div class="col-md-6">
-                     <label for="company_address" class="form-label fw-semibold">Address <span class="text-danger">*</span></label>
-                     <input type="text" class="form-control" id="company_address" name="company_address" value="{{ old('company_address', $company->company_address) }}" required>
-                     <small class="text-danger error" id="company_address_error"></small>
-                  </div>
-
-                  <div class="col-md-3">
-                     <label for="company_email" class="form-label fw-semibold">Email</label>
-                     <input type="email" class="form-control" id="company_email" name="company_email" value="{{ old('company_email', $company->company_email) }}">
-                     <small class="text-danger error" id="company_email_error"></small>
-                  </div>
-
-                  <div class="col-md-3">
-                     <label for="company_phone" class="form-label fw-semibold">Phone</label>
-                     <input type="text" class="form-control" id="company_phone" name="company_phone" value="{{ old('company_phone', $company->company_phone) }}">
-                     <small class="text-danger error" id="company_phone_error"></small>
-                  </div>
-
-                  <!-- 2. Administrator Profile -->
-                  <div class="col-12 mt-4">
-                     <div class="d-flex justify-content-between align-items-center">
-                        <h6 class="fw-bold text-primary mb-0"><i class="bi bi-person-badge me-2"></i>2. House Head / Admin Profile</h6>
+                     <div class="input-floating-wrap">
+                        <input type="text" class="form-control" id="company_name" name="company_name" placeholder=" " value="{{ old('company_name', $company->company_name) }}" required>
+                        <label class="form-label-joint">Household Name*</label>
                      </div>
-                     <hr class="mt-2 mb-3">
+                     <small class="text-danger error mt-1 d-block" id="company_name_error"></small>
                   </div>
 
-                  <div class="col-md-4">
-                     <label for="first_name" class="form-label fw-semibold">First Name <span class="text-danger">*</span></label>
-                     <input type="text" class="form-control" id="first_name" name="first_name" value="{{ old('first_name', $user->first_name ?? '') }}" required>
-                     <small class="text-danger error" id="first_name_error"></small>
+                  <div class="col-md-3">
+                     <div class="input-floating-wrap">
+                        <input type="text" class="form-control text-uppercase" id="company_code" name="company_code" placeholder=" " value="{{ old('company_code', $company->company_code) }}" maxlength="10">
+                        <label class="form-label-joint">Code / Prefix</label>
+                     </div>
+                     <small class="text-danger error mt-1 d-block" id="company_code_error"></small>
                   </div>
 
-                  <div class="col-md-4">
-                     <label for="last_name" class="form-label fw-semibold">Last Name <span class="text-danger">*</span></label>
-                     <input type="text" class="form-control" id="last_name" name="last_name" value="{{ old('last_name', $user->last_name ?? '') }}" required>
-                     <small class="text-danger error" id="last_name_error"></small>
+                  <div class="col-md-2">
+                     <div class="input-floating-wrap">
+                        <select class="form-select" id="status" name="status">
+                           <option value="1" {{ $company->status == 1 ? 'selected' : '' }}>Active</option>
+                           <option value="0" {{ $company->status == 0 ? 'selected' : '' }}>Inactive</option>
+                        </select>
+                        <label class="form-label-joint">Status*</label>
+                     </div>
                   </div>
 
-                  <div class="col-md-4">
-                     <label for="email" class="form-label fw-semibold">Login Email <span class="text-danger">*</span></label>
-                     <input type="email" class="form-control" id="email" name="email" value="{{ old('email', $user->email ?? '') }}" required>
-                     <small class="text-danger error" id="email_error"></small>
+                  <div class="col-md-2">
+                     <div class="input-floating-wrap">
+                        <input type="file" class="form-control" id="company_logo" name="company_logo" accept="image/*">
+                        <label class="form-label-joint">Update Logo</label>
+                     </div>
+                     <small class="text-danger error mt-1 d-block" id="company_logo_error"></small>
                   </div>
 
                   <div class="col-md-6">
-                     <label for="phone" class="form-label fw-semibold">Phone Number <span class="text-danger">*</span></label>
-                     <input type="text" class="form-control" id="phone" name="phone" value="{{ old('phone', $user->phone ?? '') }}" maxlength="12" required>
-                     <small class="text-danger error" id="phone_error"></small>
+                     <div class="input-floating-wrap">
+                        <input type="text" class="form-control" id="company_address" name="company_address" placeholder=" " value="{{ old('company_address', $company->company_address) }}" required>
+                        <label class="form-label-joint">Address*</label>
+                     </div>
+                     <small class="text-danger error mt-1 d-block" id="company_address_error"></small>
                   </div>
 
-                  <div class="col-12 mt-4 text-start">
-                     <button type="button" class="btn btn-secondary me-2" id="closeBtn">Cancel</button>
-                     <button type="submit" class="btn btn-primary px-4" id="updateBtn">Update Household</button>
+                  <div class="col-md-3">
+                     <div class="input-floating-wrap">
+                        <input type="email" class="form-control" id="company_email" name="company_email" placeholder=" " value="{{ old('company_email', $company->company_email) }}">
+                        <label class="form-label-joint">Email</label>
+                     </div>
+                     <small class="text-danger error mt-1 d-block" id="company_email_error"></small>
                   </div>
-               </form>
-            </div>
+
+                  <div class="col-md-3">
+                     <div class="input-floating-wrap">
+                        <input type="text" class="form-control" id="company_phone" name="company_phone" placeholder=" " value="{{ old('company_phone', $company->company_phone) }}">
+                        <label class="form-label-joint">Phone</label>
+                     </div>
+                     <small class="text-danger error mt-1 d-block" id="company_phone_error"></small>
+                  </div>
+               </div>
+
+               <!-- 2. Administrator Profile -->
+               <div class="section-title">2. House Head / Admin Profile</div>
+
+               <div class="row g-4">
+                  <div class="col-md-4">
+                     <div class="input-floating-wrap">
+                        <input type="text" class="form-control" id="first_name" name="first_name" placeholder=" " value="{{ old('first_name', $user->first_name ?? '') }}" required>
+                        <label class="form-label-joint">First Name*</label>
+                     </div>
+                     <small class="text-danger error mt-1 d-block" id="first_name_error"></small>
+                  </div>
+
+                  <div class="col-md-4">
+                     <div class="input-floating-wrap">
+                        <input type="text" class="form-control" id="last_name" name="last_name" placeholder=" " value="{{ old('last_name', $user->last_name ?? '') }}" required>
+                        <label class="form-label-joint">Last Name*</label>
+                     </div>
+                     <small class="text-danger error mt-1 d-block" id="last_name_error"></small>
+                  </div>
+
+                  <div class="col-md-4">
+                     <div class="input-floating-wrap">
+                        <input type="email" class="form-control" id="email" name="email" placeholder=" " value="{{ old('email', $user->email ?? '') }}" required>
+                        <label class="form-label-joint">Login Email*</label>
+                     </div>
+                     <small class="text-danger error mt-1 d-block" id="email_error"></small>
+                  </div>
+
+                  <div class="col-md-6">
+                     <div class="input-floating-wrap">
+                        <input type="text" class="form-control" id="phone" name="phone" placeholder=" " value="{{ old('phone', $user->phone ?? '') }}" maxlength="12" required>
+                        <label class="form-label-joint">Phone Number*</label>
+                     </div>
+                     <small class="text-danger error mt-1 d-block" id="phone_error"></small>
+                  </div>
+               </div>
+
+               <!-- Form Actions inside card -->
+               <div class="d-flex justify-content-between align-items-center mt-5 pt-3 border-top">
+                  <button type="button" class="btn btn-danger px-4 py-2" id="closeBtn" style="border-radius: 6px; font-weight: 600; font-size: 13px;">CANCEL</button>
+                  <button type="submit" class="btn px-5 py-2" id="updateBtn" style="background-color: #334e68; color: #fff; border: none; border-radius: 6px; font-weight: 600; font-size: 13px;">UPDATE</button>
+               </div>
+            </form>
          </div>
       </div>
    </div>
 </section>
+
+<!-- Floating Bottom-Right View Button[cite: 6] -->
+<a href="{{ route('superadmin.companies.index') }}" title="View Households" style="position: fixed; bottom: 25px; right: 25px; width: 55px; height: 55px; background-color: #ff9800; color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 15px rgba(255, 152, 0, 0.4); z-index: 9999; font-size: 24px; transition: transform 0.2s;">
+   <i class="bi bi-eye-fill"></i>
+</a>
 @endsection
 
 @section('scripts')
@@ -182,7 +199,7 @@
          }
 
          const btn = $('#updateBtn');
-         btn.prop('disabled', true).html('<span class="spinner-border spinner-border-sm me-1"></span>Updating...');
+         btn.prop('disabled', true).html('<span class="spinner-border spinner-border-sm me-1"></span>UPDATING...');
          $('#nms-loader-overlay').addClass('active');
 
          $.ajax({
@@ -198,13 +215,16 @@
                }
             },
             error: function(xhr) {
-               btn.prop('disabled', false).text('Update Household');
+               btn.prop('disabled', false).text('UPDATE');
                $('#nms-loader-overlay').removeClass('active');
                if (xhr.status === 422 && xhr.responseJSON.errors) {
                   $.each(xhr.responseJSON.errors, function(key, val) {
                      $('#' + key + '_error').html(val[0]);
                      $('#' + key).addClass('is-invalid');
                   });
+                  $('html, body').animate({
+                     scrollTop: $('.is-invalid').first().offset().top - 100
+                  }, 300);
                } else {
                   alert(xhr.responseJSON?.message || 'Error updating household.');
                }
