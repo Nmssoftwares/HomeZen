@@ -11,10 +11,9 @@
 <section class="section">
    <div class="row">
       <div class="col-lg-12">
-         <!-- Card Wrapper with Outer Filter Button Container -->
-         <div class="position-relative">
 
-            <!-- Card Edge Filter Button (Sticking to the right outer border) -->
+         <!-- Soft Card with Outer Edge Sticky Filter Button -->
+         <div class="card-soft p-4 position-relative">
             <div class="card-edge-filter-wrap dropdown">
                <button class="card-edge-filter-btn dropdown-toggle hide-arrow" type="button" id="cardFilterDropdown" data-bs-toggle="dropdown" aria-expanded="false" title="Filter Modules">
                   <i class="bi bi-funnel-fill fs-5"></i>
@@ -32,24 +31,20 @@
                </div>
             </div>
 
-            <!-- Soft Card Content -->
-            <div class="card-soft p-4">
-               <div class="table-responsive">
-                  <table class="table table-hover align-middle w-100" id="modulesTable">
-                     <thead>
-                        <tr>
-                           <th>Module Details</th>
-                           <th class="text-center">Code</th>
-                           <th>Functional Suite / Group</th>
-                           <th>Dashboard Entry URL</th>
-                           <th class="text-center">Status</th>
-                           <th class="text-center">Active Toggle</th>
-                        </tr>
-                     </thead>
-                  </table>
-               </div>
+            <div class="table-responsive">
+               <table class="table table-hover align-middle w-100" id="modulesTable">
+                  <thead>
+                     <tr>
+                        <th>Module Details</th>
+                        <th class="text-center">Code</th>
+                        <th>Functional Suite / Group</th>
+                        <th>Dashboard Entry URL</th>
+                        <th class="text-center">Status</th>
+                        <th class="text-center">Active Toggle</th>
+                     </tr>
+                  </thead>
+               </table>
             </div>
-
          </div>
       </div>
    </div>

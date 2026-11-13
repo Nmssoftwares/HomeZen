@@ -454,34 +454,32 @@ body.toggle-sidebar #footer {
     color: #fff;
 }
 
-/* --- Final Fix: Card Edge Filter Outside Positioning --- */
+/* --- Reference Image Style: Outer Edge Sticky Filter Button --- */
 .card-soft {
     position: relative !important;
     overflow: visible !important;
-    /* Ye zaroori hai taaki button bahar dikhe */
 }
 
-/* Card ke right border par outer stick karne ke liye */
 .card-edge-filter-wrap {
     position: absolute !important;
-    right: -42px !important;
-    /* Card ke width se theek bahar */
-    top: 20px !important;
+    right: -21px !important;
+    /* Card border ke bahar chipkaane ke liye */
+    top: 15px !important;
     z-index: 9999 !important;
 }
 
 .card-edge-filter-btn {
-    background-color: #2c6f9b !important;
+    background-color: #1b538c !important;
+    /* Professional Dark Blue */
     color: #ffffff !important;
     border: none !important;
     width: 42px !important;
     height: 42px !important;
-    border-radius: 0 8px 8px 0 !important;
-    /* Right side rounded */
+    border-radius: 6px !important;
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
-    box-shadow: 4px 4px 15px rgba(0, 0, 0, 0.2) !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2) !important;
     cursor: pointer !important;
     padding: 0 !important;
 }
@@ -491,20 +489,20 @@ body.toggle-sidebar #footer {
 }
 
 .card-edge-filter-btn:hover {
-    background-color: #1e5578 !important;
+    background-color: #15416f !important;
 }
 
-/* Dropdown menu button ke theek left side me open hoga */
+/* Click karne par dropdown left side me bahar khulega */
 .card-edge-filter-wrap .dropdown-menu {
     position: absolute !important;
     right: 50px !important;
     left: auto !important;
     top: -5px !important;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25) !important;
-    border-radius: 12px !important;
+    border-radius: 8px !important;
     border: 1px solid #cbd5e1 !important;
     padding: 15px !important;
-    min-width: 250px;
+    min-width: 240px;
     background-color: #ffffff !important;
     z-index: 999999 !important;
 }
