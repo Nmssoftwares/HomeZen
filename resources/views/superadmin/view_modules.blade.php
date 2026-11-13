@@ -15,10 +15,10 @@
          <!-- Soft Card with Outer Edge Sticky Filter Button -->
          <div class="card-soft p-4 position-relative">
             <div class="card-edge-filter-wrap dropdown">
-               <button class="card-edge-filter-btn dropdown-toggle hide-arrow" type="button" id="cardFilterDropdown" data-bs-toggle="dropdown" aria-expanded="false" title="Filter Modules">
+               <button class="card-edge-filter-btn dropdown-toggle hide-arrow" type="button" id="cardFilterDropdown" data-bs-toggle="dropdown" data-bs-popper="static" aria-expanded="false" title="Filter Modules">
                   <i class="bi bi-funnel-fill fs-5"></i>
                </button>
-               <div class="dropdown-menu dropdown-menu-end shadow-lg" aria-labelledby="cardFilterDropdown">
+               <div class="dropdown-menu dropdown-menu-end shadow-lg" aria-labelledby="cardFilterDropdown" data-bs-popper="static">
                   <label class="form-label small fw-semibold text-muted mb-1">Filter by Functional Suite:</label>
                   <select class="form-select form-select-sm" id="groupFilter">
                      <option value="">All Groups</option>

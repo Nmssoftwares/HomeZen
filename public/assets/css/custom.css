@@ -454,7 +454,7 @@ body.toggle-sidebar #footer {
     color: #fff;
 }
 
-/* --- Reference Image Style: Outer Edge Sticky Filter Button --- */
+/* --- Exact Edge Filter & Clean Left Dropdown Fix --- */
 .card-soft {
     position: relative !important;
     overflow: visible !important;
@@ -463,14 +463,12 @@ body.toggle-sidebar #footer {
 .card-edge-filter-wrap {
     position: absolute !important;
     right: -21px !important;
-    /* Card border ke bahar chipkaane ke liye */
     top: 15px !important;
     z-index: 9999 !important;
 }
 
 .card-edge-filter-btn {
     background-color: #1b538c !important;
-    /* Professional Dark Blue */
     color: #ffffff !important;
     border: none !important;
     width: 42px !important;
@@ -492,12 +490,14 @@ body.toggle-sidebar #footer {
     background-color: #15416f !important;
 }
 
-/* Click karne par dropdown left side me bahar khulega */
+/* Dropdown ko button ke left side me bahar force karne ke liye */
 .card-edge-filter-wrap .dropdown-menu {
     position: absolute !important;
+    top: 0 !important;
     right: 50px !important;
     left: auto !important;
-    top: -5px !important;
+    transform: none !important;
+    /* Bootstrap Popper transform hatane ke liye */
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25) !important;
     border-radius: 8px !important;
     border: 1px solid #cbd5e1 !important;
