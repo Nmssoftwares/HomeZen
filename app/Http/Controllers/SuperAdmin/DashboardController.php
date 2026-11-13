@@ -18,13 +18,13 @@ class DashboardController extends Controller
       // 1. Greeting calculation
       $hour = now('Asia/Kolkata')->hour;
       $data['greeting'] = $hour < 12 ? 'Good morning' : ($hour < 17 ? 'Good afternoon' : 'Good evening');
-      $data['userName'] = $user->first_name . ' ' . $user->last_name;
+      $data['userName'] = $user->name ?? ($user->first_name . ' ' . $user->last_name);
 
       // 2. Global Metric Counters
       $data['totalCompanies']     = Company::count();
       $data['activeCompanies']    = Company::where('status', 1)->count();
       $data['totalAdmins']        = User::where('role', 2)->count();
-      $data['totalEmployees']     = User::where('role', 3)->count();
+      $data['totalUsers']         = User::where('role', 3)->count();
       $data['totalActiveModules'] = Module::where('status', 1)->count();
       $data['totalModules']       = Module::count();
 
@@ -33,7 +33,7 @@ class DashboardController extends Controller
          ->get()
          ->groupBy(fn($item) => $item->group_name ?: 'General Operations');
 
-      // 4. Recently Onboarded Companies (Latest 5)
+      // 4. Recently Onboarded Households/Companies (Latest 5)
       $data['recentCompanies'] = Company::with(['users' => fn($q) => $q->where('role', 2)])
          ->latest()
          ->take(5)

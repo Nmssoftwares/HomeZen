@@ -121,25 +121,27 @@
 			<div class="login-card-body">
 				<div class="mb-4 text-center">
 					<h5 class="fw-bold text-dark mb-1">Welcome Back</h5>
-					<p class="text-muted small mb-0">Sign in to access your dashboard</p>
+					<p class="text-muted small mb-0">Sign in with email or phone number</p>
 				</div>
 
 				<form id="loginForm" class="row g-3">
 					@csrf
 
 					<div class="col-12">
-						<label class="form-label fw-semibold text-secondary small mb-1">Email Address</label>
+						<label class="form-label fw-semibold text-secondary small mb-1">Email or Phone Number</label>
 						<div class="input-group">
 							<span class="input-group-text bg-light border-end-0 text-muted" style="border-radius: 10px 0 0 10px;">
-								<i class="bi bi-envelope"></i>
+								<i class="bi bi-person"></i>
 							</span>
-							<input type="email" name="email" id="email" class="form-control border-start-0 ps-0" placeholder="name@homezen.com" autocomplete="email" required>
+							<input type="text" name="login_identifier" id="login_identifier" class="form-control border-start-0 ps-0" placeholder="name@homezen.com or 9876543210" required>
 						</div>
-						<span class="text-danger small mt-1 d-block" id="email_error"></span>
+						<span class="text-danger small mt-1 d-block" id="login_identifier_error"></span>
 					</div>
 
 					<div class="col-12">
-						<label class="form-label fw-semibold text-secondary small mb-1">Password</label>
+						<div class="d-flex justify-content-between align-items-center mb-1">
+							<label class="form-label fw-semibold text-secondary small mb-0">Password</label>
+						</div>
 						<div class="input-group">
 							<span class="input-group-text bg-light border-end-0 text-muted" style="border-radius: 10px 0 0 10px;">
 								<i class="bi bi-key"></i>
@@ -150,6 +152,13 @@
 							</button>
 						</div>
 						<span class="text-danger small mt-1 d-block" id="password_error"></span>
+					</div>
+
+					<div class="col-12">
+						<div class="form-check mb-0">
+							<input class="form-check-input" type="checkbox" name="remember" id="rememberMe">
+							<label class="form-check-label text-muted small" for="rememberMe">Remember me</label>
+						</div>
 					</div>
 
 					<div class="col-12 mt-4">
@@ -193,12 +202,12 @@
 				e.preventDefault();
 				$('.text-danger').html('');
 
-				const email = $('#email').val().trim();
+				const loginIdentifier = $('#login_identifier').val().trim();
 				const password = $('#password').val().trim();
 				let isValid = true;
 
-				if (!email) {
-					$('#email_error').html('Please provide your email.');
+				if (!loginIdentifier) {
+					$('#login_identifier_error').html('Please provide your email or phone number.');
 					isValid = false;
 				}
 				if (!password) {
@@ -216,7 +225,7 @@
 					type: "POST",
 					data: {
 						_token: "{{ csrf_token() }}",
-						email: email,
+						login_identifier: loginIdentifier,
 						password: password,
 						remember: $('#rememberMe').is(':checked') ? 1 : 0
 					},

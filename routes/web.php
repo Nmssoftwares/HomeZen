@@ -16,14 +16,12 @@ Route::middleware([''])->group(function () {
    });
 });
 
-Route::redirect('/website', '/');
-
 /*
 |--------------------------------------------------------------------------
 | Core System & Role-Based Routes
 |--------------------------------------------------------------------------
 */
-Route::middleware(['auth', 'superadmin'])->prefix('superadmin')->name('superadmin.')->group(base_path('routes/modules/superadmin.php'));
+Route::middleware(['auth'])->prefix('superadmin')->name('superadmin.')->group(base_path('routes/modules/superadmin.php'));
 
 Route::get('/language/{lang}', function ($lang) {
    if (in_array($lang, ['en', 'hi', 'gu'])) {

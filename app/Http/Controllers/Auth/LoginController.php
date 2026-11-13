@@ -30,17 +30,21 @@ class LoginController extends Controller
    public function login(Request $request): JsonResponse
    {
       $request->validate([
-         'email'    => 'required|email',
-         'password' => 'required|string',
+         'login_identifier' => 'required|string',
+         'password'         => 'required|string',
       ]);
 
-      // 1. Find User by email
-      $user = User::where('email', $request->email)->first();
+      $identifier = $request->login_identifier;
+
+      // 1. Find User by email OR phone number
+      $user = User::where('email', $identifier)
+         ->orWhere('phone', $identifier)
+         ->first();
 
       if (!$user) {
          return response()->json([
             'status'  => 'error',
-            'message' => 'No account found with this email address.',
+            'message' => 'No account found with this email or phone number.',
          ]);
       }
 
@@ -105,7 +109,6 @@ class LoginController extends Controller
       return match ((int) $user->role) {
          User::ROLE_SUPER_ADMIN   => url('/superadmin/dashboard'),
          User::ROLE_COMPANY_ADMIN => url('/admin/dashboard'),
-         User::ROLE_MANAGER,
          User::ROLE_USER          => url('/user/dashboard'),
          default                  => url('/'),
       };

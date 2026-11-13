@@ -59,21 +59,3 @@ Route::controller(SuperAdminUserController::class)->group(function () {
     Route::post('/user/{id}/permissions', 'updatePermissions')->name('user.permissions.update');
 });
 Route::resource('user', SuperAdminUserController::class)->names('user');
-
-// Website (edit the public Offnexa site)
-Route::controller(SuperAdminWebsiteController::class)->prefix('website')->name('website.')->group(function () {
-    Route::get('/', 'index')->name('index');
-    Route::get('/page/{page}', 'page')->where('page', '[a-z_]+')->name('page');
-    Route::post('/page/{page}/settings', 'saveSettings')->where('page', '[a-z_]+')->name('settings');
-    Route::post('/section/{section}/items', 'storeItem')->where('section', '[a-z_]+')->name('item.store');
-    Route::put('/items/{item}', 'updateItem')->name('item.update');
-    Route::post('/items/{item}/toggle', 'toggleItem')->name('item.toggle');
-    Route::delete('/items/{item}', 'destroyItem')->name('item.destroy');
-});
-
-// Demo requests (from the public "Book a demo" form)
-Route::controller(SuperAdminDemoRequestController::class)->prefix('demo-requests')->name('demo-requests.')->group(function () {
-    Route::get('/', 'index')->name('index');
-    Route::post('/{demoRequest}/status', 'updateStatus')->name('status');
-    Route::delete('/{demoRequest}', 'destroy')->name('destroy');
-});
