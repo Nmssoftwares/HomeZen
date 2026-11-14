@@ -1,47 +1,13 @@
 @extends('um.layouts.app')
 
 @section('content')
-<div class="pagetitle d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
-    <div>
-        <h1 class="mb-0 fs-4 fw-bold text-dark">Add New Account</h1>
-        <div class="text-muted small mt-1">Register a new House Admin or Family Member under your household.</div>
-    </div>
-    <div>
-        <a href="{{ route('um.users.index') }}" class="btn btn-secondary btn-sm shadow-sm" style="border-radius:8px; font-weight:600; padding:6px 14px;">
-            <i class="bi bi-arrow-left me-1"></i> Back
-        </a>
-    </div>
-</div>
-
 <section class="section">
     <div class="row">
         <div class="col-lg-12">
-
             <div class="card-soft p-4 bg-white shadow-sm position-relative">
-
                 <form id="addUserForm" enctype="multipart/form-data" novalidate>
                     @csrf
-
-                    <!-- 1. Role Selection -->
-                    <div class="section-title mt-0">Account Role</div>
                     <div class="row g-4 mb-4">
-                        <div class="col-md-6">
-                            <div class="input-floating-wrap">
-                                <select name="role" id="role" class="form-select" required>
-                                    <option value="3" {{ old('role', $role ?? 3) == 3 ? 'selected' : '' }}>Family Member / User (Role 3)</option>
-                                    <option value="2" {{ old('role', $role ?? 3) == 2 ? 'selected' : '' }}>House Admin (Role 2)</option>
-                                </select>
-                                <label class="form-label-joint">User Role*</label>
-                            </div>
-                            <small class="text-danger error mt-1 d-block" id="role_error"></small>
-                        </div>
-                    </div>
-
-                    <!-- 2. Personal Information -->
-                    <div class="section-title">Personal Profile Details</div>
-                    <div class="row g-4 mb-4">
-
-                        <!-- First Name -->
                         <div class="col-md-4">
                             <div class="input-floating-wrap">
                                 <input type="text" class="form-control" id="first_name" name="first_name" placeholder=" " required>
@@ -49,8 +15,6 @@
                             </div>
                             <small class="text-danger error mt-1 d-block" id="first_name_error"></small>
                         </div>
-
-                        <!-- Last Name -->
                         <div class="col-md-4">
                             <div class="input-floating-wrap">
                                 <input type="text" class="form-control" id="last_name" name="last_name" placeholder=" ">
@@ -58,8 +22,6 @@
                             </div>
                             <small class="text-danger error mt-1 d-block" id="last_name_error"></small>
                         </div>
-
-                        <!-- Email Address -->
                         <div class="col-md-4">
                             <div class="input-floating-wrap">
                                 <input type="email" class="form-control" id="email" name="email" placeholder=" " required>
@@ -67,8 +29,6 @@
                             </div>
                             <small class="text-danger error mt-1 d-block" id="email_error"></small>
                         </div>
-
-                        <!-- Contact Number -->
                         <div class="col-md-4">
                             <div class="input-floating-wrap">
                                 <input type="text" class="form-control" id="phone" name="phone" maxlength="12" placeholder=" ">
@@ -76,8 +36,6 @@
                             </div>
                             <small class="text-danger error mt-1 d-block" id="phone_error"></small>
                         </div>
-
-                        <!-- Gender -->
                         <div class="col-md-4">
                             <div class="input-floating-wrap">
                                 <select name="gender" id="gender" class="form-select">
@@ -90,8 +48,16 @@
                             </div>
                             <small class="text-danger error mt-1 d-block" id="gender_error"></small>
                         </div>
-
-                        <!-- Password -->
+                        <div class="col-md-4">
+                            <div class="input-floating-wrap">
+                                <select name="role" id="role" class="form-select" required>
+                                    <option value="3" {{ old('role', $role ?? 3) == 3 ? 'selected' : '' }}>User</option>
+                                    <option value="2" {{ old('role', $role ?? 3) == 2 ? 'selected' : '' }}>Admin</option>
+                                </select>
+                                <label class="form-label-joint">User Role*</label>
+                            </div>
+                            <small class="text-danger error mt-1 d-block" id="role_error"></small>
+                        </div>
                         <div class="col-md-4">
                             <div class="input-floating-wrap">
                                 <input type="password" class="form-control" id="password" name="password" placeholder=" " required>
@@ -99,27 +65,16 @@
                             </div>
                             <small class="text-danger error mt-1 d-block" id="password_error"></small>
                         </div>
-
                     </div>
-
-                    <!-- Form Actions (Clear & Save) -->
                     <div class="d-flex justify-content-between align-items-center mt-4 pt-3 border-top">
                         <button type="button" class="btn btn-danger px-4 py-2" id="clearBtn" style="border-radius:6px; font-weight:600; font-size:13px;">CLEAR</button>
                         <button type="submit" class="btn px-5 py-2" id="saveBtn" style="background-color: #334e68; color: #fff; border: none; border-radius: 6px; font-weight: 600; font-size: 13px;">SAVE</button>
                     </div>
-
                 </form>
-
             </div>
-
         </div>
     </div>
 </section>
-
-<!-- Floating Bottom-Right View Button -->
-<a href="{{ route('um.users.index') }}" class="floating-action-btn" title="View Users">
-   <i class="bi bi-eye-fill"></i>
-</a>
 @endsection
 
 @section('scripts')

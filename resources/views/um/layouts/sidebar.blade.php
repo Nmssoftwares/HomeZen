@@ -9,21 +9,25 @@
             </a>
         </li><!-- End Dashboard Nav -->
 
-        <!-- House Admins Management -->
+        <li class="nav-item">
+            <a class="nav-link {{ request()->routeIs('um.users.create') ? '' : 'collapsed' }}" href="{{ route('um.users.create') }}">
+                <i class="bi bi-person-badge-fill"></i>
+                <span>Add User/Admin</span>
+            </a>
+        </li>
+        
         <li class="nav-item">
             <a class="nav-link {{ request()->routeIs('um.admins*') ? '' : 'collapsed' }}" href="{{ route('um.admins.index') }}">
                 <i class="bi bi-person-badge-fill"></i>
-                <span>House Admins</span>
+                <span>Admins</span>
             </a>
-        </li><!-- End House Admins Nav -->
+        </li>
 
-        <!-- Family Members / Users Management -->
         <li class="nav-item">
-            <a class="nav-link {{ request()->routeIs('um.users*') ? '' : 'collapsed' }}" href="{{ route('um.users.index') }}">
+            <a class="nav-link {{ request()->routeIs('um.users.index') ? '' : 'collapsed' }}" href="{{ route('um.users.index') }}">
                 <i class="bi bi-people-fill"></i>
-                <span>Family Members</span>
+                <span>Users</span>
             </a>
-        </li><!-- End Family Members Nav -->
-
+        </li>
     </ul>
 </aside>
