@@ -12,32 +12,46 @@ class DashboardController extends Controller
 {
    public function index()
    {
-      $data['title'] = 'SuperAdmin - Dashboard';
-      $user          = Auth::user();
+      $user = Auth::user();
 
-      // 1. Greeting calculation
+      // 1. Greeting calculation (IST timezone)
       $hour = now('Asia/Kolkata')->hour;
-      $data['greeting'] = $hour < 12 ? 'Good morning' : ($hour < 17 ? 'Good afternoon' : 'Good evening');
-      $data['userName'] = $user->name ?? ($user->first_name . ' ' . $user->last_name);
+      $greeting = $hour < 12 ? 'Good morning' : ($hour < 17 ? 'Good afternoon' : 'Good evening');
+      $userName = $user->name ?? trim(($user->first_name ?? '') . ' ' . ($user->last_name ?? ''));
 
       // 2. Global Metric Counters
-      $data['totalCompanies']     = Company::count();
-      $data['activeCompanies']    = Company::where('status', 1)->count();
-      $data['totalAdmins']        = User::where('role', 2)->count();
-      $data['totalUsers']         = User::where('role', 3)->count();
-      $data['totalActiveModules'] = Module::where('status', 1)->count();
-      $data['totalModules']       = Module::count();
+      $totalCompanies      = Company::count();
+      $activeCompanies     = Company::where('status', 1)->count();
+      $totalAdmins         = User::where('role', 2)->count();
+      $totalUsers          = User::where('role', 3)->count();
+      $totalActiveModules  = Module::where('status', 1)->count();
+      $totalModules        = Module::count();
 
       // 3. Modules Grouped by Category & Ordered
-      $data['groupedModules'] = Module::orderBy('group_order')
+      $groupedModules = Module::orderBy('group_order', 'asc')
          ->get()
          ->groupBy(fn($item) => $item->group_name ?: 'General Operations');
 
       // 4. Recently Onboarded Households/Companies (Latest 5)
-      $data['recentCompanies'] = Company::with(['users' => fn($q) => $q->where('role', 2)])
+      $recentCompanies = Company::with(['users' => fn($q) => $q->where('role', 2)])
          ->latest()
          ->take(5)
          ->get();
+
+      $data = compact(
+         'greeting',
+         'userName',
+         'totalCompanies',
+         'activeCompanies',
+         'totalAdmins',
+         'totalUsers',
+         'totalActiveModules',
+         'totalModules',
+         'groupedModules',
+         'recentCompanies'
+      );
+
+      $data['title'] = 'SuperAdmin - Dashboard';
 
       return view('superadmin.dashboard', $data);
    }

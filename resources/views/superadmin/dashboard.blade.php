@@ -2,46 +2,6 @@
 
 @section('styles')
 <style>
-   /* App Launcher Grid & Tile Custom Styling (Inspired by Reference UI) */
-   .sa-banner {
-      background: linear-gradient(135deg, #2c6f9b, #1e5578);
-      color: #fff;
-      border-radius: 16px;
-      padding: 24px 30px;
-      box-shadow: 0 10px 30px rgba(44, 111, 155, 0.2);
-   }
-
-   .sa-banner-title {
-      font-size: 24px;
-      font-weight: 700;
-   }
-
-   .sa-banner-sub {
-      font-size: 14px;
-      opacity: 0.85;
-   }
-
-   .sa-stat-pill {
-      background: rgba(255, 255, 255, 0.15);
-      padding: 10px 18px;
-      border-radius: 12px;
-      text-align: center;
-      backdrop-filter: blur(5px);
-   }
-
-   .sa-stat-pill .num {
-      font-size: 20px;
-      font-weight: 700;
-      line-height: 1;
-   }
-
-   .sa-stat-pill .lbl {
-      font-size: 11px;
-      text-transform: uppercase;
-      opacity: 0.8;
-      margin-top: 4px;
-   }
-
    .sa-metrics-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -57,6 +17,11 @@
       align-items: center;
       gap: 16px;
       border: 1px solid #eef2f7;
+      transition: transform 0.2s ease;
+   }
+
+   .sa-metric-card:hover {
+      transform: translateY(-2px);
    }
 
    .sa-metric-icon {
@@ -92,14 +57,21 @@
    }
 
    .erp-group-header {
-      background: #f8fafc;
+      background: #334e68 !important;
+      /* Dark Slate Theme Color */
+      color: #ffffff !important;
       padding: 14px 20px;
       display: flex;
       justify-content: space-between;
       align-items: center;
       cursor: pointer;
-      border-bottom: 1px solid #eef2f7;
       user-select: none;
+      transition: background 0.2s ease;
+   }
+
+   .erp-group-header:hover {
+      background: #243b53 !important;
+      /* Slightly darker shade on hover */
    }
 
    .erp-header-left {
@@ -107,26 +79,36 @@
       align-items: center;
       gap: 10px;
       font-weight: 700;
-      color: #012970;
+      color: #ffffff !important;
       font-size: 15px;
    }
 
    .erp-header-left i {
       font-size: 18px;
-      color: #2c6f9b;
+      color: #ffffff !important;
    }
 
    .erp-header-badge {
-      background: #e0f2fe;
-      color: #0284c7;
+      background: rgba(255, 255, 255, 0.2);
+      color: #ffffff !important;
       font-size: 11px;
       padding: 2px 8px;
       border-radius: 20px;
       font-weight: 600;
    }
 
+   .erp-header-chevron {
+      color: #ffffff !important;
+      transition: transform 0.3s ease;
+   }
+
+   .erp-group-header.collapsed .erp-header-chevron {
+      transform: rotate(180deg);
+   }
+
    .erp-group-body {
       padding: 16px;
+      background: #fff;
    }
 
    .erp-launcher-grid {
@@ -177,24 +159,10 @@
       color: #94a3b8;
       margin-top: 2px;
    }
-
-   .card-soft {
-      background: #fff;
-      border-radius: 14px;
-      box-shadow: 0 4px 20px rgba(1, 41, 112, 0.05);
-      border: 1px solid #eef2f7;
-   }
 </style>
 @endsection
 
 @section('content')
-<div class="pagetitle d-flex justify-content-between align-items-center mb-3">
-   <div class="d-flex gap-2">
-      <a href="{{ route('superadmin.companies.create') }}" class="btn btn-primary shadow-sm" style="border-radius:8px; font-weight:600; padding:7px 16px; font-size:13px;">
-         <i class="bi bi-building-add me-1"></i> Add Household
-      </a>
-   </div>
-</div>
 <!-- TOP METRIC CARDS -->
 <div class="sa-metrics-grid mb-4">
    <div class="sa-metric-card">
@@ -290,7 +258,7 @@ $groupMeta = [
                         <i class="{{ $module->icon ?: 'bi bi-box' }}"></i>
                      </div>
                      <div class="erp-tile-text">
-                        <span class="erp-tile-label">{{ $module->name }}</span>
+                        <span class="erp-tile-label">{{ $name = $module->name }}</span>
                         <span class="erp-tile-code font-monospace">{{ $module->short_name }}</span>
                      </div>
                   </a>

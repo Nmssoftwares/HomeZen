@@ -5,10 +5,6 @@ use App\Http\Controllers\SuperAdmin\DashboardController as SuperAdminDashboardCo
 use App\Http\Controllers\SuperAdmin\ModuleController as SuperAdminModuleController;
 use App\Http\Controllers\SuperAdmin\CompanyController as SuperAdminCompanyController;
 use App\Http\Controllers\SuperAdmin\ProfileController as SuperAdminProfileController;
-use App\Http\Controllers\SuperAdmin\UserController as SuperAdminUserController;
-use App\Http\Controllers\SuperAdmin\CompanySettingController as SuperAdminCompanySettingController;
-use App\Http\Controllers\SuperAdmin\WebsiteController as SuperAdminWebsiteController;
-use App\Http\Controllers\SuperAdmin\DemoRequestController as SuperAdminDemoRequestController;
 
 // Dashboard
 Route::controller(SuperAdminDashboardController::class)->group(function () {
@@ -33,12 +29,6 @@ Route::controller(SuperAdminCompanyController::class)->group(function () {
 });
 Route::resource('companies', SuperAdminCompanyController::class)->names('companies');
 
-// Company Settings (SuperAdmin Self Company Profile & Tax Info)
-Route::controller(SuperAdminCompanySettingController::class)->prefix('company-settings')->name('company_settings.')->group(function () {
-    Route::get('/', 'index')->name('index');
-    Route::post('/update', 'update')->name('update');
-});
-
 // Profile
 Route::controller(SuperAdminProfileController::class)->group(function () {
     Route::get('/profile', 'index')->name('profile');
@@ -47,15 +37,3 @@ Route::controller(SuperAdminProfileController::class)->group(function () {
     Route::post('/profile-image-remove', 'removeProfileImage')->name('profile.image.remove');
     Route::post('/profile-image-upload', 'uploadImage')->name('profile.image.upload');
 });
-
-// User
-Route::controller(SuperAdminUserController::class)->group(function () {
-    Route::get('/user-datatable', 'datatable')->name('user.datatable');
-    Route::post('/user-reset-password', 'resetPassword')->name('user.reset.password');
-    Route::post('/user-get-modules', 'getUserModules')->name('user.get.modules');
-    Route::post('/user-update-modules', 'updateUserModules')->name('user.update.modules');
-    Route::get('user/export-pdf', 'exportPdf')->name('user.export.pdf');
-    Route::get('/user/{id}/permissions', 'permissions')->name('user.permissions');
-    Route::post('/user/{id}/permissions', 'updatePermissions')->name('user.permissions.update');
-});
-Route::resource('user', SuperAdminUserController::class)->names('user');
