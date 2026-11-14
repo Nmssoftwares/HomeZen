@@ -85,8 +85,8 @@ class UserController extends Controller
     */
    public function create(Request $request)
    {
-      $data['title'] = 'UM - Add New User/Admin';
-      $data['companies'] = \App\Models\Company::where('status', 1)->orderBy('company_name')->get();
+      $data['title'] = 'UM - Add New User / Admin';
+      $data['companies'] = Company::where('status', 1)->orderBy('company_name')->get();
       $data['role'] = $request->get('role', 3);
 
       return view('um.add_user', $data);

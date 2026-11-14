@@ -4,9 +4,7 @@
 <section class="section">
    <div class="row">
       <div class="col-lg-12">
-
          <div class="card-soft p-4 position-relative">
-
             <div class="table-responsive">
                <table class="table table-hover align-middle w-100" id="usersTable">
                   <thead>
@@ -24,6 +22,9 @@
       </div>
    </div>
 </section>
+<a href="{{ route('users.create') }}" title="Add New Account" style="position: fixed; bottom: 25px; right: 25px; width: 55px; height: 55px; background-color: #334e68; color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 15px rgba(51, 78, 104, 0.4); z-index: 9999; font-size: 24px; transition: transform 0.2s;">
+   <i class="bi bi-plus-lg"></i>
+</a>
 @endsection
 
 @section('scripts')
@@ -38,7 +39,7 @@
          ajax: {
             url: "{{ route('um.users.datatable') }}",
             data: function(d) {
-               d.role = "{{ $role ?? 3 }}"; // Role 2 (Admins) ya Role 3 (Users) dynamically pass hoga
+               d.role = "{{ $role ?? 3 }}";
             }
          },
          dom: 'Bfrtip',
@@ -59,12 +60,28 @@
             targets: [3, 4],
             className: 'text-center'
          }],
-         columns: [
-            { data: 'user_details', name: 'first_name' },
-            { data: 'company_name', name: 'company.company_name' },
-            { data: 'contact_info', name: 'contact_no' },
-            { data: 'status_badge', name: 'status' },
-            { data: 'action', name: 'action', orderable: false, searchable: false }
+         columns: [{
+               data: 'user_details',
+               name: 'first_name'
+            },
+            {
+               data: 'company_name',
+               name: 'company.company_name'
+            },
+            {
+               data: 'contact_info',
+               name: 'contact_no'
+            },
+            {
+               data: 'status_badge',
+               name: 'status'
+            },
+            {
+               data: 'action',
+               name: 'action',
+               orderable: false,
+               searchable: false
+            }
          ]
       });
 
