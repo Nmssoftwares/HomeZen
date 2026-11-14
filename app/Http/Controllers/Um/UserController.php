@@ -40,7 +40,7 @@ class UserController extends Controller
    {
       $role = $request->get('role', 3);
 
-      // Company relation ke sath data fetch kar rahe hain (future-proof company-wise display)
+      // Company relation ke sath data fetch kar rahe hain
       $users = User::with('company')->where('role', $role);
 
       return DataTables::of($users)
@@ -63,18 +63,22 @@ class UserController extends Controller
             return '<span class="small text-muted">' . e($row->contact_no ?? $row->phone ?? 'No Contact') . '</span>';
          })
          ->addColumn('status_badge', function ($row) {
-            return (int) $row->status === 1
-               ? '<span class="badge bg-success">Active</span>'
-               : '<span class="badge bg-danger">Inactive</span>';
+            $checked = (int) $row->status === 1 ? 'checked' : '';
+            return '<div class="form-check form-switch align-items-center mb-0 ms-1">
+               <input class="form-check-input status-toggle" type="checkbox" data-id="' . $row->id . '" ' . $checked . ' style="cursor:pointer; width:38px; height:20px;">
+            </div>';
          })
          ->addColumn('action', function ($row) {
-            $checked = (int) $row->status === 1 ? 'checked' : '';
-            return '<div class="d-flex align-items-center justify-content-center gap-2">
-               <a href="' . route('um.users.edit', $row->id) . '" class="btn btn-sm btn-outline-primary" title="Edit"><i class="bi bi-pencil-square"></i></a>
-               <div class="form-check form-switch mb-0">
-                  <input class="form-check-input status-toggle" type="checkbox" data-id="' . $row->id . '" ' . $checked . ' style="cursor:pointer; width:38px; height:20px;">
-               </div>
-            </div>';
+            $html = '<div class="d-flex align-items-center justify-content-center gap-2">';
+
+            // 1. Edit Button
+            $html .= '<a href="' . route('um.users.edit', $row->id) . '" class="btn btn-sm btn-outline-primary rounded-circle" title="Edit Account" style="width:32px; height:32px; display:flex; align-items:center; justify-content:center;"><i class="bi bi-pencil"></i></a>';
+
+            // 2. Change Password Button (Modal Trigger)
+            $html .= '<button type="button" class="btn btn-sm btn-outline-success rounded-circle changePasswordBtn" data-userid="' . $row->id . '" data-bs-toggle="modal" data-bs-target="#changePasswordModal" title="Reset Password" style="width:32px; height:32px; display:flex; align-items:center; justify-content:center;"><i class="bi bi-key"></i></button>';
+
+            $html .= '</div>';
+            return $html;
          })
          ->rawColumns(['user_details', 'company_name', 'contact_info', 'status_badge', 'action'])
          ->make(true);
@@ -86,7 +90,6 @@ class UserController extends Controller
    public function create(Request $request)
    {
       $data['title'] = 'UM - Add New User / Admin';
-      $data['companies'] = Company::where('status', 1)->orderBy('company_name')->get();
       $data['role'] = $request->get('role', 3);
 
       return view('um.add_user', $data);
@@ -95,13 +98,12 @@ class UserController extends Controller
    /**
     * Store New User/Admin
     */
-   public function store(Request $request)
+   public function store(Request $request): JsonResponse
    {
       $request->validate([
          'first_name' => 'required|string|max:255',
          'email'      => 'required|email|unique:users,email',
          'password'   => 'required|min:6',
-         'company_id' => 'required|exists:companies,id',
          'role'       => 'required|in:2,3',
       ]);
 
@@ -111,15 +113,16 @@ class UserController extends Controller
          'name'       => $request->first_name . ' ' . $request->last_name,
          'email'      => $request->email,
          'password'   => Hash::make($request->password),
-         'company_id' => $request->company_id,
+         'company_id' => auth()->user()->company_id ?? 1, // Automatically logged-in admin's company
          'role'       => $request->role,
-         'contact_no' => $request->contact_no,
+         'contact_no' => $request->phone,
          'status'     => 1,
       ]);
 
-      $redirectRoute = $request->role == 2 ? 'um.admins.index' : 'um.users.index';
-
-      return redirect()->route($redirectRoute)->with('success', 'User created successfully.');
+      return response()->json([
+         'status'  => 'success',
+         'message' => 'Account created successfully.',
+      ]);
    }
 
    /**
@@ -129,7 +132,6 @@ class UserController extends Controller
    {
       $data['title'] = 'UM - Edit User/Admin';
       $data['user'] = User::findOrFail($id);
-      $data['companies'] = \App\Models\Company::where('status', 1)->orderBy('company_name')->get();
 
       return view('um.edit_user', $data);
    }
@@ -144,7 +146,6 @@ class UserController extends Controller
       $request->validate([
          'first_name' => 'required|string|max:255',
          'email'      => 'required|email|unique:users,email,' . $id,
-         'company_id' => 'required|exists:companies,id',
          'role'       => 'required|in:2,3',
       ]);
 
@@ -155,9 +156,8 @@ class UserController extends Controller
       if ($request->filled('password')) {
          $user->password = Hash::make($request->password);
       }
-      $user->company_id = $request->company_id;
       $user->role = $request->role;
-      $user->contact_no = $request->contact_no;
+      $user->contact_no = $request->phone;
       $user->save();
 
       $redirectRoute = $user->role == 2 ? 'um.admins.index' : 'um.users.index';

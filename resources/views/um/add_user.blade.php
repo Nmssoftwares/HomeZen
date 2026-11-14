@@ -4,10 +4,10 @@
 <div class="pagetitle d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
     <div>
         <h1 class="mb-0 fs-4 fw-bold text-dark">Add New Account</h1>
-        <div class="text-muted small mt-1">Fill in the details below to register a new House Admin or Family Member.</div>
+        <div class="text-muted small mt-1">Register a new House Admin or Family Member under your household.</div>
     </div>
     <div>
-        <a href="{{ route('users.index') }}" class="btn btn-secondary btn-sm shadow-sm" style="border-radius:8px; font-weight:600; padding:6px 14px;">
+        <a href="{{ route('um.users.index') }}" class="btn btn-secondary btn-sm shadow-sm" style="border-radius:8px; font-weight:600; padding:6px 14px;">
             <i class="bi bi-arrow-left me-1"></i> Back
         </a>
     </div>
@@ -17,16 +17,14 @@
     <div class="row">
         <div class="col-lg-12">
 
-            <div class="card-soft p-4 bg-white shadow-sm">
+            <div class="card-soft p-4 bg-white shadow-sm position-relative">
 
                 <form id="addUserForm" enctype="multipart/form-data" novalidate>
                     @csrf
 
-                    <!-- 1. Account & Household Information -->
-                    <div class="section-title mt-0">1. Account & Household Assignment</div>
+                    <!-- 1. Role Selection -->
+                    <div class="section-title mt-0">Account Role</div>
                     <div class="row g-4 mb-4">
-
-                        <!-- Role Selection -->
                         <div class="col-md-6">
                             <div class="input-floating-wrap">
                                 <select name="role" id="role" class="form-select" required>
@@ -37,25 +35,10 @@
                             </div>
                             <small class="text-danger error mt-1 d-block" id="role_error"></small>
                         </div>
-
-                        <!-- Household / Company Selection -->
-                        <div class="col-md-6">
-                            <div class="input-floating-wrap">
-                                <select name="company_id" id="company_id" class="form-select" required>
-                                    <option value="">Select Household</option>
-                                    @foreach($companies as $comp)
-                                    <option value="{{ $comp->id }}" {{ old('company_id') == $comp->id ? 'selected' : '' }}>{{ $comp->company_name }}</option>
-                                    @endforeach
-                                </select>
-                                <label class="form-label-joint">Household / Company*</label>
-                            </div>
-                            <small class="text-danger error mt-1 d-block" id="company_id_error"></small>
-                        </div>
-
                     </div>
 
                     <!-- 2. Personal Information -->
-                    <div class="section-title">2. Personal Profile Details</div>
+                    <div class="section-title">Personal Profile Details</div>
                     <div class="row g-4 mb-4">
 
                         <!-- First Name -->
@@ -132,6 +115,11 @@
         </div>
     </div>
 </section>
+
+<!-- Floating Bottom-Right View Button -->
+<a href="{{ route('um.users.index') }}" title="View Accounts" style="position: fixed; bottom: 25px; right: 25px; width: 55px; height: 55px; background-color: #ff9800; color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 15px rgba(255, 152, 0, 0.4); z-index: 9999; font-size: 24px; transition: transform 0.2s;">
+    <i class="bi bi-eye-fill"></i>
+</a>
 @endsection
 
 @section('scripts')
@@ -166,11 +154,6 @@
                 $('#role').addClass('is-invalid');
                 isValid = false;
             }
-            if (!$('#company_id').val()) {
-                $('#company_id_error').text('Please select a household.');
-                $('#company_id').addClass('is-invalid');
-                isValid = false;
-            }
             if (!$('#first_name').val().trim()) {
                 $('#first_name_error').text('First name is required.');
                 $('#first_name').addClass('is-invalid');
@@ -199,7 +182,7 @@
             $('#nms-loader-overlay').addClass('active');
 
             $.ajax({
-                url: "{{ route('users.store') }}",
+                url: "{{ route('um.users.store') }}",
                 type: "POST",
                 data: new FormData(this),
                 processData: false,
@@ -209,10 +192,10 @@
                 },
                 success: function(response) {
                     if (typeof showAlert === 'function') {
-                        showAlert('success', 'User created successfully.');
+                        showAlert('success', response.message);
                     }
                     setTimeout(() => {
-                        window.location.href = "{{ route('users.index') }}";
+                        window.location.href = "{{ route('um.users.index') }}";
                     }, 1000);
                 },
                 error: function(xhr) {
