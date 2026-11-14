@@ -22,7 +22,7 @@
       </div>
    </div>
 </section>
-<a href="{{ route('um.users.create') }}" title="Add New Account" style="position: fixed; bottom: 25px; right: 25px; width: 55px; height: 55px; background-color: #334e68; color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 15px rgba(51, 78, 104, 0.4); z-index: 9999; font-size: 24px; transition: transform 0.2s;">
+<a href="{{ route('um.users.create') }}" class="floating-action-btn" title="Add User">
    <i class="bi bi-plus-lg"></i>
 </a>
 @endsection

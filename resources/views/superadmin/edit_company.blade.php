@@ -121,7 +121,7 @@
 </section>
 
 <!-- Floating Bottom-Right View Button[cite: 6] -->
-<a href="{{ route('superadmin.companies.index') }}" title="View Households" style="position: fixed; bottom: 25px; right: 25px; width: 55px; height: 55px; background-color: #ff9800; color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 15px rgba(255, 152, 0, 0.4); z-index: 9999; font-size: 24px; transition: transform 0.2s;">
+<a href="{{ route('superadmin.companies.index') }}" title="View Households" class="floating-action-btn">
    <i class="bi bi-eye-fill"></i>
 </a>
 @endsection
